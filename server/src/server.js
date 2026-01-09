@@ -1,0 +1,24 @@
+import express from "express";
+import dotenv from "dotenv";
+import connectDatabase from "./config/database.js";
+import userRouter from "./routes/userRouter.js"
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+const app = express();
+dotenv.config();
+
+// CORS middleware should be before other middlewares
+app.use(cors({ 
+  origin: 'http://localhost:3000', 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(express.json());
+app.use(cookieParser());
+connectDatabase(process.env.MONGODB_URL);
+app.use("/api", userRouter);
+app.listen(process.env.PORT || 5000 , () => {
+  console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
+});
