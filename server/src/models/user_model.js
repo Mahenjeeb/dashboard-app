@@ -3,12 +3,9 @@ const userschema = new Schema(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: {
-      type: String,
-      enum: ["SUPER_ADMIN", "ADMIN", "USER"],
-      default: "USER",
-    },
+    role: { type: String, default: "SUPER_ADMIN" },
     isActive: { type: Boolean, default: true },
+    workspace: { type: String, ref: "workspaces" },
     refreshToken: String,
   },
   { timestamps: true }

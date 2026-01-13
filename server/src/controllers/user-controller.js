@@ -1,4 +1,4 @@
-import userModel from "../models/userModel.js";
+import userModel from "../models/user_model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -9,7 +9,7 @@ const cookieOptions = {
 };
 
 const signUpUser = async (req, resp) => {
-  const { email, password } = req.body;
+  const { email, password, role = "USER" } = req.body;
   if (!email) {
     return resp.status(400).json({ message: "Email is required" });
   }
@@ -23,6 +23,7 @@ const signUpUser = async (req, resp) => {
     const signUpUserObj = {
       email,
       password: hashedPassword,
+      role,
     };
     await userModel.create(signUpUserObj);
     return resp.status(201).json({ message: "Account created" });

@@ -1,0 +1,10 @@
+import express from "express";
+import createApp  from "../controllers/app-controller.js";
+import createWorkspace from "../controllers/workspace-controller.js";
+import verifyToken from "../middleware/user-auth-middleware.js";
+import createInvitation from "../controllers/invitation-controller.js";
+const router = express.Router();
+router.post("/workspace",verifyToken, createWorkspace);
+router.post("/application",verifyToken, createApp);
+router.post("/invitation",verifyToken, createInvitation);
+export default router;
