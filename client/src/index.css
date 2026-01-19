@@ -1,1 +1,10 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+* {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+body {
+  background-color: #f7f7f7;
+  color: black;
+}

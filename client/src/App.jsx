@@ -1,9 +1,9 @@
-import Signup from "./components/Signup";
+import AppRouting from "./routing/AppRouting";
 
 const App = () => {
   return (
     <>
-    <Signup/>
+      <AppRouting />
     </>
   );
 };

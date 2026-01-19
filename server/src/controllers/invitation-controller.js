@@ -6,7 +6,6 @@ import nodemailer from "nodemailer";
 const createInvitation = async (req, resp) => {
   const { role, _id } = req.user;
   const { name, email, roleForUser } = req.body;
-
   try {
     if (role !== "SUPER_ADMIN")
       return resp
@@ -35,7 +34,7 @@ const createInvitation = async (req, resp) => {
         pass: "AXHqtnBfBZZJVy3p2v",
       },
     });
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: `${user.email}`,
       to: `${invitation.email}`,
       subject: "App Invitation Mail",
