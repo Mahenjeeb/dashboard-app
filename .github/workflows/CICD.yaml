@@ -1,0 +1,19 @@
+name: BUILD-TEST-DEPLOY
+on:
+  push:
+    branches: [main]
+
+jobs: 
+  build:
+    run: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+    
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 22
+
+    - name: Install Dependecies
+      run: npm install
