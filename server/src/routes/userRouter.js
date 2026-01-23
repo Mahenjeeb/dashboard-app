@@ -3,14 +3,16 @@ import {
   signUpUser,
   loginUser,
   logOut,
-  refreshAccessToken,
+  me,
+  refreshAccessToken
 } from "../controllers/user-controller.js";
 import verifyToken from "../middleware/user-auth-middleware.js";
 const router = express.Router();
 router.post("/signup", signUpUser);
-router.get("/refresh", refreshAccessToken);
 router.post("/login", loginUser);
+router.post("/refresh", refreshAccessToken);
+// router.use(verifyToken);
+router.get("/me", verifyToken, me);
 router.get("/logout", verifyToken, logOut);
-
 
 export default router;

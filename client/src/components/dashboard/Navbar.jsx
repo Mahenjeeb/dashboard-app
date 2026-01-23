@@ -1,22 +1,39 @@
-import { PanelsTopLeft} from "lucide-react";
-import React from "react";
+import { PanelsTopLeft } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import instance from "@/services/auth_service";
+import { useAuth } from "@/context/AuthProvider.jsx";
 
 const Navbar = () => {
+  const [userInfo, setUserInfo] = useState([]);
+  const { token } = useAuth();
+  useEffect(() => {
+    (async () => {
+      if (token) {
+        const { data } = await instance.get("/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserInfo(data.user);
+      }
+    })();
+  }, []);
+
+  const firstLetter = userInfo.email;
   return (
     <>
-      <nav className="navbar w-full flex justify-between border px-4 border-gray-200 shadow-md rounded-md">
+      <nav className="navbar w-full flex justify-between items-center border px-4 border-gray-200 shadow-md rounded-md">
         <div>
           <label htmlFor="sidebar-drawer" aria-label="open sidebar">
             <PanelsTopLeft />
           </label>
         </div>
-        <div>
-          {/* <div className="avatar">
-            <div className="w-12 rounded">
-              <img src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
-            </div>
-          </div> */}
-          <button className="btn btn-primary">Sign Up/Log In</button>
+        <div className="avatar avatar-placeholder">
+          <div className="bg-gray-300 text-black w-12 rounded-full">
+            <span className="uppercase font-extrabold text-xl">
+              {firstLetter}
+            </span>
+          </div>
         </div>
       </nav>
     </>

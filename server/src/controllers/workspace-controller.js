@@ -13,8 +13,6 @@ const createWorkspace = async (req, resp) => {
       const user = await userModel.findById({ _id });
       user.workspace = workspace._id;
       await user.save();
-      console.log("work", workspace);
-      
       return resp
         .status(201)
         .json({ message: `${workspace.workspace_name} Created` });
@@ -23,5 +21,8 @@ const createWorkspace = async (req, resp) => {
     return resp.status(500).json({ message: error?.message });
   }
 };
-
-export default createWorkspace;
+const getWorkspace = async (_, resp) => {
+  const workspace = await Workspace.find();
+  return resp.status(200).json({message: workspace})
+}
+export {createWorkspace, getWorkspace};

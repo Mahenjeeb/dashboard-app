@@ -4,38 +4,44 @@ import Table from "@/components/table/Table";
 import Home from "@/pages/Home";
 import Invitations from "@/pages/Invitations";
 import Environment from "@/pages/Environment";
+import ProtectedRoute from "./ProtectedRoute";
+import Signup from "@/components/user_auth/Signup";
+
 const AppRouting = () => {
-  const router = createBrowserRouter(
-    [
-      {
-        path: "/",
-        element: <MainLayout/>,
-        children: [
-          {
-            path: "/home",
-            element: <Home/>
-          },
-          {
-            path: "/user",
-            element: <Table/>
-          },
-          {
-            path: "/invitations",
-            element: <Invitations/>
-          },
-          {
-            path: "/environments",
-            element: <Environment/>
-          }
-        ]
-      }
-    ]
-  );
-  return (
-    <RouterProvider router={router}>
-      <MainLayout/>
-    </RouterProvider>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/signup",
+      Component: Signup,
+    },
+    {
+      Component: ProtectedRoute,
+      children: [
+        {
+          path: "/",
+          Component: MainLayout,
+          children: [
+            {
+              path: "/home",
+              Component: Home,
+            },
+            {
+              path: "/user",
+              Component: Table,
+            },
+            {
+              path: "/invitations",
+              Component: Invitations,
+            },
+            {
+              path: "/environments",
+              Component: Environment,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
+  return <RouterProvider router={router} />;
 };
 
 export default AppRouting;

@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 
 const cookieOptions = {
   httpOnly: true,
-  secure: false, // For production make it to true
-  // sameSite: "strict",
+  secure: true, // For production make it to true
+  sameSite: "strict",
 };
 
 const signUpUser = async (req, resp) => {
@@ -37,40 +37,45 @@ const generateToken = (user) => {
   const accessToken = jwt.sign(
     { _id: user._id, role: user.role },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "10m" }
+    { expiresIn:"15m" },
   );
   const refreshToken = jwt.sign(
     { _id: user._id },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
   return { accessToken, refreshToken };
 };
 
 // Refreshing AccesToken
 const refreshAccessToken = async (req, resp) => {
-  const token = req.cookies?.refreshToken;
-  if (!token)
+  try {
+    const token = req.cookies?.refreshToken;
+    // is refresh token available or not
+    if (!token)
+      return resp
+        .status(500)
+        .json({ message: "Session Expired Please Sign in again" });
+    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const user = await userModel.findById({ _id: decoded?._id });
+    // if user is valid or not
+    if (!user)
+      return resp.status(500).json({ message: `${user.email} doesn't exists` });
+    // Verifying is the refresh token also expired compairing DB with cookies
+    if (token !== user.refreshToken)
+      return resp
+        .status(500)
+        .json({ message: "Session Expired Please Sign in again" });
+    const { refreshToken: newRefreshToken, accessToken } = generateToken(user);
+    user.refreshToken = newRefreshToken;
+    await user.save();
     return resp
-      .status(401)
-      .json({ message: "Session Expired Please Sign in Agagin" });
-  const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-  const user = await userModel.findById({ _id: decoded?._id });
-  if (!user)
-    return resp
-      .status(401)
-      .json({ message: "Session Expired Please Sign in Agagin" });
-
-  if (token !== user.refreshToken)
-    return resp
-      .status(401)
-      .json({ message: "Session Expired Please Sign in Agagin" });
-  const { refreshToken, accessToken } = generateToken(user);
-  return resp
-    .cookie("refreshToken", refreshToken, cookieOptions)
-    .cookie("accessToken", accessToken, cookieOptions)
-    .status(200)
-    .json({ accessToken, refreshToken });
+      .cookie("refreshToken", newRefreshToken, cookieOptions)
+      .status(200)
+      .json({ accessToken });
+  } catch (error) {
+    return resp.status(401).json({ message: "Session Expired Please Sign in again" });
+  }
 };
 
 const loginUser = async (req, resp) => {
@@ -85,27 +90,30 @@ const loginUser = async (req, resp) => {
   await user.save({ validateBeforeSave: true });
   return resp
     .cookie("refreshToken", refreshToken, cookieOptions)
-    .cookie("accessToken", accessToken, cookieOptions)
     .status(200)
-    .json({ message: "Login successfull" });
+    .json(accessToken);
 };
-
+const me = async (req, resp) => {
+  const { _id } = req.user;
+  const user = await userModel
+    .findById({ _id })
+    .select("-password")
+    .select("-refreshToken");
+  return resp.status(200).json({ user });
+};
 const logOut = async (req, resp) => {
   const id = req.user._id;
-  const user = await userModel.findByIdAndUpdate(
+  await userModel.findByIdAndUpdate(
     { _id: id },
     {
       $set: { refreshToken: "" },
     },
-    { new: true }
+    { new: true },
   );
-  console.log(user);
-
   return resp
     .status(200)
     .clearCookie("refreshToken", cookieOptions)
-    .clearCookie("accessToken", cookieOptions)
     .json({ message: "User logged out" });
 };
 
-export { signUpUser, loginUser, refreshAccessToken, logOut };
+export { signUpUser, loginUser, generateToken, logOut, me, refreshAccessToken };
