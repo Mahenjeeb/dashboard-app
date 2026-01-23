@@ -1,7 +1,8 @@
 name: BUILD-TEST-DEPLOY
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs: 
   build:
@@ -16,4 +17,5 @@ jobs:
         node-version: 22
 
     - name: Install Dependecies
-      run: npm install
+      run: |
+        npm install
