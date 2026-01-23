@@ -4,13 +4,13 @@ on:
     branches:
       - main
 
-jobs: 
+jobs:
   build:
     run-on: ubuntu-latest
   steps:
     - name: Checkout code
       uses: actions/checkout@v6
-    
+
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
