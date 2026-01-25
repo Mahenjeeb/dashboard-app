@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectDatabase from "../src/config/database.js";
-import userRouter from "../src/routes/userRouter.js";
-import appRouter from "../src/routes/appRouter.js";
+import connectDatabase from "./src/config/database.js";
+import userRouter from "./src/routes/userRouter.js";
+import appRouter from "./src/routes/appRouter.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
@@ -27,10 +27,10 @@ app.use("/api", appRouter);
 app.get("/", (_, resp) => {
   resp.send("Server Online");
 });
-if (process.env.NODE_ENV != "production") {
-  app.listen(process.env.PORT, () => {
-    console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
-  });
-}
+// if (process.env.NODE_ENV != "production") {
+//   app.listen(process.env.PORT, () => {
+//     console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
+//   });
+// }
 /* Exporting app for Vercel */
 export default app;
