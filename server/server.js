@@ -27,10 +27,10 @@ app.use("/api", appRouter);
 app.get("/", (_, resp) => {
   resp.send("Server Online");
 });
-// if (process.env.NODE_ENV != "production") {
-//   app.listen(process.env.PORT, () => {
-//     console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
-//   });
-// }
+if (process.env.NODE_ENV != "production") {
+  app.listen(process.env.PORT, () => {
+    console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
+  });
+}
 /* Exporting app for Vercel */
 export default app;
