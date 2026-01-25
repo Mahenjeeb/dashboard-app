@@ -1,14 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectDatabase from "./config/database.js";
-import userRouter from "./routes/userRouter.js";
-import appRouter from "./routes/appRouter.js";
+import connectDatabase from "./src/config/database.js";
+import userRouter from "./src/routes/userRouter.js";
+import appRouter from "./src/routes/appRouter.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 dotenv.config();
 
-// CORS middleware should be before other middlewares
+/* Middleware */
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -19,7 +19,9 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
-connectDatabase(process.env.MONGODB_URL);
+/* Database */
+await connectDatabase(process.env.MONGODB_URL);
+/* Routes */ 
 app.use("/api", userRouter);
 app.use("/api", appRouter);
 app.get("/", (_, resp) => {
@@ -30,3 +32,5 @@ if (process.env.NODE_ENV != "production") {
     console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
   });
 }
+/* Exporting app for Vercel */
+export default app;
