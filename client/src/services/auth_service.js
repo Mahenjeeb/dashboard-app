@@ -1,8 +1,12 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const instance = axios.create({
+  /* For Production*/
   baseURL: `${API_BASE_URL}/api`,
+  /* For Local Testing */
+  // baseURL: `/api`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -21,6 +25,30 @@ instance.interceptors.response.use(
         localStorage.setItem("token", data.accessToken);
         return instance(originalRequest);
       } catch (err) {
+        if (
+          err.response?.status === 500 &&
+          err.response?.data?.message === "expired"
+        ) {
+          toast.error("Session expired. Redirecting...", {
+            duration: 2500,
+            icon: "⏱️",
+            style: {
+              background: "#ef4444",
+              color: "#fff",
+              fontWeight: "500",
+              padding: "16px 24px",
+              borderRadius: "8px",
+            },
+            ariaProps: {
+              role: "status",
+              "aria-live": "polite",
+            },
+          });
+
+          setTimeout(() => {
+            window.location.href = "/signup";
+          }, 2500);
+        }
         localStorage.removeItem("token");
         return Promise.reject(err);
       }

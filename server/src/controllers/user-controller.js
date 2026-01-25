@@ -37,7 +37,7 @@ const generateToken = (user) => {
   const accessToken = jwt.sign(
     { _id: user._id, role: user.role },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn:"15m" },
+    { expiresIn: 5 },
   );
   const refreshToken = jwt.sign(
     { _id: user._id },
@@ -52,10 +52,7 @@ const refreshAccessToken = async (req, resp) => {
   try {
     const token = req.cookies?.refreshToken;
     // is refresh token available or not
-    if (!token)
-      return resp
-        .status(500)
-        .json({ message: "Session Expired Please Sign in again" });
+    if (!token) return resp.status(500).json({ message: "expired" });
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const user = await userModel.findById({ _id: decoded?._id });
     // if user is valid or not
@@ -63,18 +60,19 @@ const refreshAccessToken = async (req, resp) => {
       return resp.status(500).json({ message: `${user.email} doesn't exists` });
     // Verifying is the refresh token also expired compairing DB with cookies
     if (token !== user.refreshToken)
-      return resp
-        .status(500)
-        .json({ message: "Session Expired Please Sign in again" });
+      return resp.status(500).json({ message: "expired" });
     const { refreshToken: newRefreshToken, accessToken } = generateToken(user);
     user.refreshToken = newRefreshToken;
     await user.save();
     return resp
-      .cookie("refreshToken", newRefreshToken, cookieOptions)
+      .cookie("refreshToken", newRefreshToken, {
+        ...cookieOptions,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
       .status(200)
       .json({ accessToken });
   } catch (error) {
-    return resp.status(401).json({ message: "Session Expired Please Sign in again" });
+    return resp.status(401).json({ message: "expired" });
   }
 };
 
@@ -89,7 +87,10 @@ const loginUser = async (req, resp) => {
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: true });
   return resp
-    .cookie("refreshToken", refreshToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, {
+      ...cookieOptions,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
     .status(200)
     .json(accessToken);
 };
