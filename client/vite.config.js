@@ -6,10 +6,9 @@ import { cwd } from "node:process";
 import { fileURLToPath } from "url";
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const env = loadEnv(mode, cwd(), "VITE_");
-  console.info("mode", mode)
+  const env = loadEnv(cwd(), "VITE_");
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
