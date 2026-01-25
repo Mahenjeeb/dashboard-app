@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 // https://vite.dev/config/
 export default defineConfig(() => {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const env = loadEnv(cwd(), "VITE_");
+  const env = loadEnv(cwd(), "");
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
