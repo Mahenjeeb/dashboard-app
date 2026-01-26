@@ -1,36 +1,47 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import connectDatabase from "./src/config/database.js";
 import userRouter from "./src/routes/userRouter.js";
 import appRouter from "./src/routes/appRouter.js";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-const app = express();
-dotenv.config();
 
-/* Middleware */
+dotenv.config();
+const app = express();
+/* CORS MUST be first */
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  }),
+  })
+);
+/* Preflight */
+app.options(
+  "*",
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
 );
 app.use(express.json());
 app.use(cookieParser());
-/* Database */
+/* DB */
 await connectDatabase(process.env.MONGODB_URL);
-/* Routes */ 
+/* Routes */
 app.use("/api", userRouter);
 app.use("/api", appRouter);
-app.get("/", (_, resp) => {
-  resp.send("Server Online");
+
+app.get("/", (_, res) => {
+  res.send("Server Online");
 });
-if (process.env.NODE_ENV != "production") {
+
+/* Local only */
+if (process.env.NODE_ENV !== "production") {
   app.listen(process.env.PORT, () => {
-    console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
+    console.log(`Server listening on ${process.env.PORT}`);
   });
 }
-/* Exporting app for Vercel */
+/* Vercel */
 export default app;
