@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const cookieOptions = {
   httpOnly: true,
   secure: true, // For production make it to true
-  sameSite: true,
+  sameSite: "none",
 };
 
 const signUpUser = async (req, resp) => {
