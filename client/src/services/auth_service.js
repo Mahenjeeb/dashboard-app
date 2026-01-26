@@ -13,6 +13,17 @@ const instance = axios.create({
   withCredentials: true,
 });
 
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -25,10 +36,7 @@ instance.interceptors.response.use(
         localStorage.setItem("token", data.accessToken);
         return instance(originalRequest);
       } catch (err) {
-        if (
-          err.response?.status === 500 &&
-          err.response?.data?.message === "expired"
-        ) {
+        if (err.response?.status === 401 || err.response?.status === 500) {
           toast.error("Session expired. Redirecting...", {
             duration: 2500,
             icon: "⏱️",

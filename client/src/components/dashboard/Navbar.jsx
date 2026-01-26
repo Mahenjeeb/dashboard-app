@@ -1,21 +1,13 @@
 import { PanelsTopLeft } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import instance from "@/services/auth_service";
-import { useAuth } from "@/context/AuthProvider.jsx";
 
 const Navbar = () => {
   const [userInfo, setUserInfo] = useState([]);
-  const { token } = useAuth();
   useEffect(() => {
     (async () => {
-      if (token) {
-        const { data } = await instance.get("/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUserInfo(data.user);
-      }
+      const { data } = await instance.get("/me");
+      setUserInfo(data.user);
     })();
   }, []);
 

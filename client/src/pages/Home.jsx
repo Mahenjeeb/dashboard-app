@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import instance from "@/services/auth_service";
-import { useAuth } from "@/context/AuthProvider";
+
 const Home = () => {
   const [dataApi, setDataApi] = useState([]);
-  const { token } = useAuth();
+
   useEffect(() => {
     (async function () {
-      if (token) {
-        const { data } = await instance.get("/all-workspace", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setDataApi(data.message);
-      }
+      const { data } = await instance.get("/all-workspace");
+      setDataApi(data.message);
     })();
   }, []);
   return (
