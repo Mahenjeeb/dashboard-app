@@ -20,6 +20,10 @@ class TokenManager {
     this.refreshPromise = (async () => {
       try {
         const { data } = await instance.post("/refresh");
+        // Validate response
+        if (!data.accessToken) {
+          throw new Error("No access token in response");
+        }
         this.token = data.accessToken;
         localStorage.setItem("token", this.token);
         return this.token;
@@ -42,6 +46,10 @@ class TokenManager {
   }
   isTokenValid() {
     return !!this.token;
+  }
+  reloadToken() {
+    this.token = localStorage.getItem("token");
+    return this.token;
   }
 }
 // Create singleton instance

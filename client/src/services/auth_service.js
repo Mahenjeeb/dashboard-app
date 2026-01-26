@@ -18,7 +18,7 @@ instance.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 // Response interceptor for handling errors and token refresh
 instance.interceptors.response.use(
