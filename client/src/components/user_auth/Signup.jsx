@@ -3,14 +3,14 @@ import "./Signup.css";
 import instance from "@/services/auth_service.js";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
-import { useAuth } from "@/context/AuthProvider";
+import getSetAccessToken from "@/util/getSetAccessToken.js";
 
 const Signup = () => {
   const defaultFormData = { email: "", password: "" };
   const [formData, setFormData] = useState(defaultFormData);
   const [isSignIn, setSignIn] = useState(true);
   const navigate = useNavigate();
-  const { setToken } = useAuth();
+  const { setAccessToken } = getSetAccessToken();
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -21,7 +21,7 @@ const Signup = () => {
       const url = isSignIn ? "/login" : "signup";
       const { data } = await instance.post(url, JSON.stringify(formData));
       toast.success(data.message);
-      setToken(data);
+      setAccessToken(data);
       navigate("/invitations", { replace: true });
     } catch (error) {
       toast.error(error.message);

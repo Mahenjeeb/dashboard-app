@@ -3,10 +3,7 @@ import toast from "react-hot-toast";
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const instance = axios.create({
-  /* For Production*/
   baseURL: `${API_BASE_URL}/api`,
-  /* For Local Testing */
-  // baseURL: `/api`,
   headers: {
     "Content-Type": "application/json",
   },

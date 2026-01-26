@@ -1,23 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 
+import getSetAccessToken from "@/util/getSetAccessToken";
 import { createContext, useContext } from "react";
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
-  const token = localStorage.getItem("token");
-  const setToken = (newToken) => {
-    if (newToken) {
-      localStorage.setItem("token", newToken);
-    } else {
-      localStorage.removeItem("token");
-    }
-    // Trigger re-render by dispatching custom event
-    window.dispatchEvent(new Event("tokenUpdated"));
-  };
-
+  const { getAccessToken } = getSetAccessToken();
+  const token = getAccessToken();
   return (
-    <AuthContext.Provider value={{ token, setToken }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ token }}>{children}</AuthContext.Provider>
   );
 };
 export const useAuth = () => {
