@@ -2,10 +2,12 @@ import userModel from "../models/user_model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const isProd = process.env.NODE_ENV === 'production'
 const cookieOptions = {
   httpOnly: true,
-  secure: true, // For production make it to true
-  sameSite: "none",
+  secure: isProd,
+  sameSite: isProd ? 'none' :'lax',
+  domain: isProd ? '.vercel.app' : 'localhost'
 };
 
 const signUpUser = async (req, resp) => {
@@ -100,6 +102,7 @@ const me = async (req, resp) => {
     .findById({ _id })
     .select("-password")
     .select("-refreshToken");
+  console.log(cookieOptions);
   return resp.status(200).json({ user });
 };
 const logOut = async (req, resp) => {
