@@ -1,7 +1,7 @@
-import { useAuth } from "@/context/AuthProvider";
+import tokenManager from "@/util/tokenManager";
 import { Navigate, Outlet } from "react-router";
 const ProtectedRoute = () => {
-  const token = useAuth();
+  const token = tokenManager.getAccessToken();
   return <>{token ? <Outlet /> : <Navigate to="/signup" replace />}</>;
 };
 
