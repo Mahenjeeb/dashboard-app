@@ -6,9 +6,15 @@ const userschema = new Schema(
     role: { type: String, default: "SUPER_ADMIN" },
     isActive: { type: Boolean, default: true },
     workspace: { type: String, ref: "workspaces" },
-    refreshToken: String,
+    refreshTokens: [
+      {
+        token: String,
+        createdAt: Date,
+        expiresAt: Date,
+      },
+    ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 const userModel = model("users", userschema);
 export default userModel;

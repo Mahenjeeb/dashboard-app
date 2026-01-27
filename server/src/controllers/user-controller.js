@@ -2,11 +2,11 @@ import userModel from "../models/user_model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === "production";
 const cookieOptions = {
   httpOnly: true,
   secure: isProd,
-  sameSite: isProd ? 'none' :'lax'
+  sameSite: isProd ? "none" : "lax",
 };
 
 const signUpUser = async (req, resp) => {
@@ -53,17 +53,23 @@ const refreshAccessToken = async (req, resp) => {
   try {
     const token = req.cookies?.refreshToken;
     // is refresh token available or not
-    if (!token) return resp.status(401).json({ message: "expired" });
+    if (!token) return resp.sendStatus(401);
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const user = await userModel.findById({ _id: decoded?._id });
     // if user is valid or not
-    if (!user)
-      return resp.status(500).json({ message: `${user.email} doesn't exists` });
-    // Verifying is the refresh token also expired compairing DB with cookies
-    if (token !== user.refreshToken)
-      return resp.status(500).json({ message: "expired" });
+    if (!user) return resp.sendStatus(401);
+    // Token Entry is checked wheather it matches the token stored in cookie
+    const tokenEntry = user.refreshTokens.find((t) => t.token === token);
+    if (!tokenEntry) return resp.sendStatus(401);
+    // Revoking the used refresh token
+    user.refreshTokens = user.refreshTokens.filter((t) => t.token !== token);
+    // Generating new refreshtoken
     const { refreshToken: newRefreshToken, accessToken } = generateToken(user);
-    user.refreshToken = newRefreshToken;
+    // Storing new refresh token
+    user.refreshTokens.push({
+      token: newRefreshToken,
+      createdAt: new Date(),
+    });
     await user.save();
     return resp
       .cookie("refreshToken", newRefreshToken, {
@@ -73,7 +79,7 @@ const refreshAccessToken = async (req, resp) => {
       .status(200)
       .json({ accessToken });
   } catch (error) {
-    return resp.status(401).json({ message: "expired" });
+    return resp.sendStatus(401);
   }
 };
 
@@ -85,7 +91,7 @@ const loginUser = async (req, resp) => {
   if (!isMatch)
     return resp.status(404).json({ message: "Invalid Credentails" });
   const { accessToken, refreshToken } = generateToken(user);
-  user.refreshToken = refreshToken;
+  user.refreshTokens = [{ token: refreshToken, createdAt: new Date() }];
   await user.save({ validateBeforeSave: true });
   return resp
     .cookie("refreshToken", refreshToken, {
@@ -106,11 +112,9 @@ const me = async (req, resp) => {
 const logOut = async (req, resp) => {
   const id = req.user._id;
   await userModel.findByIdAndUpdate(
-    { _id: id },
-    {
-      $set: { refreshToken: "" },
-    },
-    { new: true },
+    id,
+    { $set: { refreshTokens: [] } },
+    { new: true }
   );
   return resp
     .status(200)
