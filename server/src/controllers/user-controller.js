@@ -91,7 +91,7 @@ const loginUser = async (req, resp) => {
   if (!isMatch)
     return resp.status(404).json({ message: "Invalid Credentails" });
   const { accessToken, refreshToken } = generateToken(user);
-  user.refreshTokens = [{ token: refreshToken, createdAt: new Date() }];
+  user.refreshTokens.push({ token: refreshToken, createdAt: new Date() });
   await user.save({ validateBeforeSave: true });
   return resp
     .cookie("refreshToken", refreshToken, {
@@ -114,7 +114,7 @@ const logOut = async (req, resp) => {
   await userModel.findByIdAndUpdate(
     id,
     { $set: { refreshTokens: [] } },
-    { new: true }
+    { new: true },
   );
   return resp
     .status(200)
