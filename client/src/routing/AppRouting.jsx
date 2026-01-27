@@ -1,5 +1,5 @@
 import MainLayout from "@/layout/MainLayout";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import Table from "@/components/table/Table";
 import Home from "@/pages/Home";
 import Invitations from "@/pages/Invitations";
@@ -21,19 +21,19 @@ const AppRouting = () => {
           Component: MainLayout,
           children: [
             {
-              path: "/home",
-              Component: Home,
+              index: true,
+             Component: Home,
             },
             {
-              path: "/user",
+              path: "user",
               Component: Table,
             },
             {
-              path: "/invitations",
+              path: "invitations",
               Component: Invitations,
             },
             {
-              path: "/environments",
+              path: "environments",
               Component: Environment,
             },
           ],

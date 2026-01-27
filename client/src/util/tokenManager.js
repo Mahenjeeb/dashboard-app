@@ -1,57 +1,35 @@
 import instance from "@/services/auth_service";
 class TokenManager {
-  constructor() {
-    this.token = localStorage.getItem("token");
-    this.refreshPromise = null;
-  }
-  async setAccessToken(token) {
-    if (token) {
-      this.token = token;
-      localStorage.setItem("token", token);
-    } else {
-      await this.refreshToken();
-    }
-  }
-  async refreshToken() {
-    // Prevent multiple simultaneous refresh requests
-    if (this.refreshPromise) {
-      return this.refreshPromise;
-    }
-    this.refreshPromise = (async () => {
-      try {
-        const { data } = await instance.post("/refresh");
-        // Validate response
-        if (!data.accessToken) {
-          throw new Error("No access token in response");
-        }
-        this.token = data.accessToken;
-        localStorage.setItem("token", this.token);
-        return this.token;
-      } catch (error) {
-        console.error("Token refresh failed:", error);
-        this.clearToken();
-        throw error;
-      } finally {
-        this.refreshPromise = null;
-      }
-    })();
-    return this.refreshPromise;
-  }
+  token = null;
+  refreshPromise = null;
+
   getAccessToken() {
     return this.token;
   }
-  clearToken() {
+
+  setAccessToken(token) {
+    this.token = token;
+  }
+
+  async refreshToken() {
+    if (this.refreshPromise) return this.refreshPromise;
+    this.refreshPromise = instance
+      .post("/refresh")
+      .then(res => {
+        this.token = res.data.accessToken;
+        console.log(this.token);
+        return this.token;
+      })
+      .finally(() => {
+        this.refreshPromise = null;
+      });
+    return this.refreshPromise;
+  }
+
+  logout() {
     this.token = null;
-    localStorage.removeItem("token");
-  }
-  isTokenValid() {
-    return !!this.token;
-  }
-  reloadToken() {
-    this.token = localStorage.getItem("token");
-    return this.token;
+    window.location.href = "/signup";
   }
 }
-// Create singleton instance
-const tokenManager = new TokenManager();
-export default tokenManager;
+
+export default new TokenManager();

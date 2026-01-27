@@ -53,7 +53,7 @@ const refreshAccessToken = async (req, resp) => {
   try {
     const token = req.cookies?.refreshToken;
     // is refresh token available or not
-    if (!token) return resp.status(500).json({ message: "expired" });
+    if (!token) return resp.status(401).json({ message: "expired" });
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const user = await userModel.findById({ _id: decoded?._id });
     // if user is valid or not
@@ -101,7 +101,6 @@ const me = async (req, resp) => {
     .findById({ _id })
     .select("-password")
     .select("-refreshToken");
-  console.log(cookieOptions);
   return resp.status(200).json({ user });
 };
 const logOut = async (req, resp) => {

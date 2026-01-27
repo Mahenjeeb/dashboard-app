@@ -2,7 +2,7 @@ import { Home, Mail, Settings2, User } from "lucide-react";
 const sidebarMenuItems = [
   {
     icon: Home,
-    url: "/home",
+    url: "/",
     text: "Home",
   },
   {
