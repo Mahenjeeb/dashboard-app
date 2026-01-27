@@ -56,20 +56,10 @@ const refreshAccessToken = async (req, resp) => {
     if (!token) return resp.sendStatus(401);
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const user = await userModel.findById({ _id: decoded?._id });
-    // if user is valid or not
-    if (!user) return resp.sendStatus(401);
-    // Token Entry is checked wheather it matches the token stored in cookie
-    const tokenEntry = user.refreshTokens.find((t) => t.token === token);
-    if (!tokenEntry) return resp.sendStatus(401);
-    // Revoking the used refresh token
-    user.refreshTokens = user.refreshTokens.filter((t) => t.token !== token);
-    // Generating new refreshtoken
+    if (!user || user.refreshToken !== token) {
+      return resp.status(401).json({ reason: "NEW_LOGIN" });
+    }
     const { refreshToken: newRefreshToken, accessToken } = generateToken(user);
-    // Storing new refresh token
-    user.refreshTokens.push({
-      token: newRefreshToken,
-      createdAt: new Date(),
-    });
     await user.save();
     return resp
       .cookie("refreshToken", newRefreshToken, {
@@ -91,7 +81,8 @@ const loginUser = async (req, resp) => {
   if (!isMatch)
     return resp.status(404).json({ message: "Invalid Credentails" });
   const { accessToken, refreshToken } = generateToken(user);
-  user.refreshTokens.push({ token: refreshToken, createdAt: new Date() });
+  user.refreshToken = refreshToken;
+  user.forceLogoutReason = "NEW_LOGIN";
   await user.save({ validateBeforeSave: true });
   return resp
     .cookie("refreshToken", refreshToken, {
@@ -110,16 +101,11 @@ const me = async (req, resp) => {
   return resp.status(200).json({ user });
 };
 const logOut = async (req, resp) => {
-  const id = req.user._id;
-  await userModel.findByIdAndUpdate(
-    id,
-    { $set: { refreshTokens: [] } },
-    { new: true },
-  );
-  return resp
-    .status(200)
-    .clearCookie("refreshToken", cookieOptions)
-    .json({ message: "User logged out" });
+  await userModel.findByIdAndUpdate(req.user._id, {
+    refreshToken: null,
+    forceLogoutReason: "MANUAL",
+  });
+  return resp.clearCookie("refreshToken", cookieOptions).sendStatus(200);
 };
 
 export { signUpUser, loginUser, generateToken, logOut, me, refreshAccessToken };
