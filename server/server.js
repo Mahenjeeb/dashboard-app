@@ -24,13 +24,12 @@ await connectDatabase(process.env.MONGODB_URL);
 /* Routes */ 
 app.use("/api/auth", userRouter);
 app.use("/api/app", appRouter);
-app.get("/", (_, resp) => {
-  resp.send("Server Online");
-});
-if (process.env.NODE_ENV != "production") {
-  app.listen(process.env.PORT, () => {
-    console.log(`Server Listneting on Port ${process.env.PORT} 🚀`);
+if (process.env.NODE_ENV === "production") {
+  const path = require("path");
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
   });
-}
+}   
 /* Exporting app for Vercel */
 export default app;
