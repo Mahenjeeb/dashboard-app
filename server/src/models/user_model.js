@@ -6,12 +6,7 @@ const userschema = new Schema(
     role: { type: String, default: "SUPER_ADMIN" },
     isActive: { type: Boolean, default: true },
     workspace: { type: String, ref: "workspaces" },
-    refreshToken: String,
-    forceLogoutReason: {
-      type: String,
-      enum: ["NEW_LOGIN", "MANUAL", null],
-      default: null,
-    },
+    refreshToken: [String],
   },
   { timestamps: true },
 );

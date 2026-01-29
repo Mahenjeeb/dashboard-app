@@ -1,15 +1,15 @@
 import { useState } from "react";
 import "./Signup.css";
-import instance from "@/services/auth_service.js";
 import toast from "react-hot-toast";
+import { useInterceptorAPI } from "@/hooks/useInterceptorAPI";
 import { useNavigate } from "react-router";
-import tokenManager from "@/util/tokenManager.js";
 
 const Signup = () => {
   const defaultFormData = { email: "", password: "" };
   const [formData, setFormData] = useState(defaultFormData);
   const [isSignIn, setSignIn] = useState(true);
   const navigate = useNavigate();
+  const privateInterceptor = useInterceptorAPI()
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -17,10 +17,9 @@ const Signup = () => {
   const handleFormSubmit = async (event) => {
     try {
       event.preventDefault();
-      const url = isSignIn ? "/login" : "signup";
-      const { data } = await instance.post(url, JSON.stringify(formData));
+      const url = isSignIn ? "login" : "signup";
+      const { data } = await privateInterceptor.post(`/auth/${url}`, JSON.stringify(formData));
       toast.success(data.message);
-      tokenManager.setAccessToken(data);
       navigate("/invitations", { replace: true });
     } catch (error) {
       toast.error(error.message);

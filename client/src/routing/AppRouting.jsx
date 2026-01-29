@@ -22,7 +22,7 @@ const AppRouting = () => {
           children: [
             {
               index: true,
-             Component: Home,
+              Component: Home,
             },
             {
               path: "user",

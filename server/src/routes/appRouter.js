@@ -1,11 +1,15 @@
 import express from "express";
-import createApp  from "../controllers/app-controller.js";
-import {createWorkspace, getWorkspace} from "../controllers/workspace-controller.js";
-import verifyToken from "../middleware/user-auth-middleware.js";
+import createApp from "../controllers/app-controller.js";
+import {
+  createWorkspace,
+  getWorkspace,
+} from "../controllers/workspace-controller.js";
 import createInvitation from "../controllers/invitation-controller.js";
+import authenticateUser from "../middleware/auth-middleware.js";
 const router = express.Router();
-router.post("/workspace",verifyToken, createWorkspace);
-router.get("/all-workspace",verifyToken, getWorkspace);
-router.post("/application",verifyToken, createApp);
-router.post("/invitation",verifyToken, createInvitation);
+router.use(authenticateUser);
+router.post("/workspace", createWorkspace);
+router.get("/all-workspace", getWorkspace);
+router.post("/application", createApp);
+router.post("/invitation", createInvitation);
 export default router;

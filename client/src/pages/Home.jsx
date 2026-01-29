@@ -1,10 +1,10 @@
+// import useUserLoginData from "@/hooks/useUserLoginData";
 const Home = () => {
+  // const usrData = useUserLoginData()
   return (
     <>
       <div>
-        <ul>
-          "Hello There"
-        </ul>
+          {"Hello"}
       </div>
     </>
   );

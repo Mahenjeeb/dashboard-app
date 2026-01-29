@@ -1,11 +1,13 @@
 import { Toaster } from "react-hot-toast";
 import AppRouting from "./routing/AppRouting";
-
+// import { UserProvider } from "./context/UserContext";
 const App = () => {
   return (
     <>
-      <AppRouting />
-      <Toaster />
+      {/* <UserProvider> */}
+        <AppRouting />
+        <Toaster />
+      {/* </UserProvider> */}
     </>
   );
 };

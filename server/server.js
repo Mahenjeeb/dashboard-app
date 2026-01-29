@@ -22,8 +22,8 @@ app.use(cookieParser());
 /* Database */
 await connectDatabase(process.env.MONGODB_URL);
 /* Routes */ 
-app.use("/api", userRouter);
-app.use("/api", appRouter);
+app.use("/api/auth", userRouter);
+app.use("/api/app", appRouter);
 app.get("/", (_, resp) => {
   resp.send("Server Online");
 });
