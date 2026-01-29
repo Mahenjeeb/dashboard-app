@@ -5,6 +5,7 @@ import userRouter from "./src/routes/userRouter.js";
 import appRouter from "./src/routes/appRouter.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
 dotenv.config();
 const app = express();
 
@@ -21,15 +22,17 @@ app.use(express.json());
 app.use(cookieParser());
 /* Database */
 await connectDatabase(process.env.MONGODB_URL);
-/* Routes */ 
+/* Routes */
 app.use("/api/auth", userRouter);
 app.use("/api/app", appRouter);
+app.get("/", (_, resp) => {
+  return resp.status(200).json("server online");
+});
 if (process.env.NODE_ENV === "production") {
-  const path = require("path");
   app.use(express.static(path.join(__dirname, "../client/dist")));
   app.get("/*", (req, res) => {
     res.sendFile(path.join(__dirname, "../client/dist/index.html"));
   });
-}   
+}
 /* Exporting app for Vercel */
 export default app;
