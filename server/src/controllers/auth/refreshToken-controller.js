@@ -17,7 +17,6 @@ const refreshAccessToken = async (req, resp) => {
     .filter((rt) => rt !== refreshToken)
     .concat(newRefreshToken);
   await user.save();
-  console.log("New Token refresh", user.refreshToken);
   return resp
     .cookie("refreshToken", newRefreshToken, expiryConfigRefresh)
     .cookie("accessToken", accessToken, expiryConfigAccess)

@@ -1,34 +1,25 @@
-/* For Local Testing */
-// import { defineConfig, loadEnv } from "vite";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import path from "path";
-/* For Local Testing */
-// import { cwd } from "node:process";
-import { fileURLToPath } from "url";
+import process from "node:process";
 
-// https://vite.dev/config/
-export default defineConfig(() => {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  /* For Local Testing */
-  // const env = loadEnv(cwd(), "");
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "VITE_");
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src"),
+        "@": "/src",
       },
     },
     server: {
-      /* For Local Testing */
-      // proxy: {
-      //   "/api": {
-      //     target: env.VITE_SERVER_URL,
-      //     changeOrigin: true,
-      //   },
-      // },
-      port: 3000,
+      port: 5173,
+      proxy: {
+        "/api": {
+          target: env.VITE_SERVER_URL || "http://localhost:5000",
+          changeOrigin: true,
+        },
+      },
     },
   };
 });
