@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import connectDatabase from "./src/config/database.js";
 import userRouter from "./src/routes/userRouter.js";
 import appRouter from "./src/routes/appRouter.js";
-import cors from "cors";
+// import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
 dotenv.config();
@@ -11,14 +11,14 @@ const app = express();
 /* Trust proxy for Render */
 app.set("trust proxy", 1);
 /* Middleware */
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
+// app.use(
+//   cors({
+//     origin: process.env.CLIENT_URL,
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   }),
+// );
 app.use(express.json());
 app.use(cookieParser());
 /* Database */
