@@ -1,9 +1,9 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 export const useInterceptorAPI = () => {
-  const serverURL = import.meta.env.VITE_SERVER_URL;
+  // const serverURL = import.meta.env.VITE_SERVER_URL;
   const privateInterceptor = axios.create({
-    baseURL: `${serverURL}/api`,
+    baseURL: `/api`,
     withCredentials: true,
     headers: {
       "Content-Type": "application/json",
