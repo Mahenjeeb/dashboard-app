@@ -1,17 +1,17 @@
 import express from "express";
 import {
-  signUpUser,
-  loginUser,
-  logOut,
+  signup,
+  login,
+  logout,
   me
 } from "../controllers/auth/auth-controller.js";
-import authenticateUser from "../middleware/auth-middleware.js";
+import authenticate from "../middleware/auth-middleware.js";
 import refreshAccessToken from "../controllers/auth/refreshToken-controller.js"
 const router = express.Router();
-router.post("/signup", signUpUser);
-router.post("/login", loginUser);
+router.post("/signup", signup);
+router.post("/login", login);
 router.post("/refresh", refreshAccessToken);
-router.get("/me", authenticateUser, me);
-router.get("/logout", authenticateUser, logOut);
+router.get("/me", authenticate, me);
+router.get("/logout", authenticate, logout);
 
 export default router;

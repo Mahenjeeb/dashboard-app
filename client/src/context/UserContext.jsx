@@ -1,13 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from "react";
-import { useInterceptorAPI } from "@/hooks/useInterceptorAPI";
+import { useInterceptorAPI } from "@/api/interceptorAPI";
 const UserContext = createContext(null);
 export const UserProvider = ({ children }) => {
-  const privateInterceptor = useInterceptorAPI();
+  const apiInstance = useInterceptorAPI();
   const [usrData, setUsrData] = useState();
   useEffect(() => {
     (async () => {
-      const { data } = await privateInterceptor.get("/app/me");
+      const { data } = await apiInstance.get("/app/me");
       setUsrData(data);
     })();
   }, []);

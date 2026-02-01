@@ -4,7 +4,6 @@ import sidebarMenuItems from "@/data/sidebarMenuItems";
 import Navbar from "@/components/dashboard/Navbar";
 import Logo from "@/components/dashboard/Logo";
 const Sidebar = () => {
-
   return (
     <>
       <div className="drawer lg:drawer-open bg-gray-100">
@@ -12,7 +11,7 @@ const Sidebar = () => {
         <div className="drawer-content p-6">
           <Navbar />
           <div className="p-4">
-            <Outlet/>
+            <Outlet />
           </div>
         </div>
         <div className="drawer-side">
@@ -20,14 +19,12 @@ const Sidebar = () => {
             <Logo />
             <ul className="menu w-full grow">
               {sidebarMenuItems.map((item) => (
-                <Link to={item.url} key={item.text}>
-                  <li>
-                    <button className="li-btn" data-tip={item.text}>
-                      <item.icon className="sidebar-btn" />
-                      <span className="li-span">{item.text}</span>
-                    </button>
-                  </li>
-                </Link>
+                <li key={item.text}>
+                  <Link to={item.url} className="li-btn" data-tip={item.text}>
+                    <item.icon className="sidebar-btn" />
+                    <span className="li-span">{item.text}</span>
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>

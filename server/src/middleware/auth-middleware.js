@@ -1,6 +1,6 @@
 import userModel from "../models/user_model.js";
 import jwt from "jsonwebtoken";
-const authenticateUser = async (req, resp, next) => {
+const authenticate = async (req, resp, next) => {
   try {
     const accessToken = req.cookies?.accessToken;
     const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
@@ -14,4 +14,4 @@ const authenticateUser = async (req, resp, next) => {
   }
 };
 
-export default authenticateUser;
+export default authenticate;

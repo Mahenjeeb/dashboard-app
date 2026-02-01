@@ -1,5 +1,5 @@
-import Workspace from "../models/workspace_model.js";
-import userModel from "../models/user_model.js";
+import Workspace from "../../models/workspace_model.js";
+import userModel from "../../models/user_model.js";
 const createWorkspace = async (req, resp) => {
   try {
     const { _id, role } = req.user;

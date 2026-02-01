@@ -1,8 +1,8 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-export const useInterceptorAPI = () => {
+export const interceptorAPI = () => {
   // const serverURL = import.meta.env.VITE_SERVER_URL;
-  const privateInterceptor = axios.create({
+  const apiInstance = axios.create({
     baseURL: `/api`,
     withCredentials: true,
     headers: {
@@ -10,15 +10,15 @@ export const useInterceptorAPI = () => {
     },
   });
 
-  privateInterceptor.interceptors.response.use(
+  apiInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest = error.config;      
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
-          await privateInterceptor.post("/auth/refresh");
-          return privateInterceptor(originalRequest);
+          await apiInstance.post("/auth/refresh");
+          return apiInstance(originalRequest);
         } catch (error) {
           toast.error("Session Expired...")
           return Promise.reject(error);
@@ -27,5 +27,5 @@ export const useInterceptorAPI = () => {
       return Promise.reject(error);
     },
   );
-  return privateInterceptor;
+  return apiInstance;
 };

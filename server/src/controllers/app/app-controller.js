@@ -1,5 +1,5 @@
-import appModel from "../models/application_model.js";
-import userModel from "../models/user_model.js";
+import appModel from "../../models/application_model.js";
+import userModel from "../../models/user_model.js";
 const createApp = async (req, resp) => {
   try {
     const { _id, role } = req.user;

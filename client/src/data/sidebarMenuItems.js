@@ -1,19 +1,14 @@
-import { Home, Mail, Settings2, User } from "lucide-react";
+import { Home, Mail, Settings2, Users } from "lucide-react";
 const sidebarMenuItems = [
   {
-    icon: Home,
-    url: "/",
-    text: "Home",
+    icon: Users,
+    url: "/users",
+    text: "Users",
   },
   {
     icon: Mail,
     url: "/invitations",
     text: "Invitations",
-  },
-  {
-    icon: User,
-    url: "/user",
-    text: "Users",
   },
   {
     icon: Settings2,

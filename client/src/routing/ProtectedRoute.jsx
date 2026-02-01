@@ -1,14 +1,14 @@
 import { Navigate, Outlet } from "react-router";
 import { useEffect, useState } from "react";
-import { useInterceptorAPI } from "@/hooks/useInterceptorAPI";
+import { interceptorAPI } from "@/api/interceptorAPI";
 const ProtectedRoute = () => {
-  const privateInterceptor = useInterceptorAPI();
+  const apiInstance = interceptorAPI();
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
       try {
-        const resp = await privateInterceptor.get("/auth/me");
+        const resp = await apiInstance.get("/auth/me");
         if (resp.status === 200) {
           setIsValid(true);
         }

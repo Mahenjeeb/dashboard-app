@@ -7,7 +7,7 @@ import {
   generateToken,
 } from "../../utils/auth-service.js";
 
-const signUpUser = async (req, resp) => {
+const signup = async (req, resp) => {
   const { email, password, role = "USER" } = req.body;
   if (!email) {
     return resp.status(400).json({ message: "Email is required" });
@@ -32,7 +32,7 @@ const signUpUser = async (req, resp) => {
   }
 };
 
-const loginUser = async (req, resp) => {
+const login = async (req, resp) => {
   const refreshToken = req.cookies?.refreshToken;
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
@@ -64,6 +64,6 @@ const me = async (req, resp) => {
   return resp.status(200).json({ user });
 };
 
-const logOut = async (req, resp) => {};
+const logout = async (req, resp) => {};
 
-export { signUpUser, loginUser, generateToken, logOut, me };
+export { signup, login, logout, me };

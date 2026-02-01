@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
-import Invitation from "../models/invitation-model.js";
-import userModel from "../models/user_model.js";
+import Invitation from "../../models/invitation-model.js";
+import userModel from "../../models/user_model.js";
 import nodemailer from "nodemailer";
 
 const createInvitation = async (req, resp) => {

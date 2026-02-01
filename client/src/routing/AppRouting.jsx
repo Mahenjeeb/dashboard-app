@@ -1,11 +1,12 @@
 import MainLayout from "@/layout/MainLayout";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import Table from "@/components/table/Table";
-import Home from "@/pages/Home";
 import Invitations from "@/pages/Invitations";
 import Environment from "@/pages/Environment";
 import ProtectedRoute from "./ProtectedRoute";
 import Signup from "@/components/user_auth/Signup";
+import PageNotFound from "@/pages/PageNotFound";
+import { commonLoader } from "@/api/CommonLoader";
 
 const AppRouting = () => {
   const router = createBrowserRouter([
@@ -21,12 +22,9 @@ const AppRouting = () => {
           Component: MainLayout,
           children: [
             {
-              index: true,
-              Component: Home,
-            },
-            {
-              path: "user",
+              path: "users",
               Component: Table,
+              loader: commonLoader,
             },
             {
               path: "invitations",
@@ -39,6 +37,10 @@ const AppRouting = () => {
           ],
         },
       ],
+    },
+    {
+      path: "*",
+      element: <PageNotFound />,
     },
   ]);
   return <RouterProvider router={router} />;
