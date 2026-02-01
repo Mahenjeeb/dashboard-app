@@ -6,7 +6,7 @@ import Environment from "@/pages/Environment";
 import ProtectedRoute from "./ProtectedRoute";
 import Signup from "@/components/user_auth/Signup";
 import PageNotFound from "@/pages/PageNotFound";
-import { commonLoader } from "@/api/CommonLoader";
+import { commonLoader } from "@/api/commonLoader";
 
 const AppRouting = () => {
   const router = createBrowserRouter([
