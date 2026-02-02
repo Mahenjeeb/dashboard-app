@@ -1,0 +1,21 @@
+@reference "tailwindcss";
+@plugin "daisyui";
+
+.table tr > th {
+  @apply text-white;
+}
+fieldset legend {
+    @apply text-black
+}
+fieldset input {
+    @apply bg-white outline-none
+}
+fieldset select {
+    @apply bg-white outline-none;
+}
+.fieldset-legend {
+    @apply text-zinc-600 font-semibold;
+}
+.btn {
+    @apply bg-blue-500 outline-none border-0 rounded-none px-3;
+}

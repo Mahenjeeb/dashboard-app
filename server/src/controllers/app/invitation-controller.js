@@ -5,22 +5,19 @@ import nodemailer from "nodemailer";
 
 const createInvitation = async (req, resp) => {
   const { role, _id } = req.user;
-  const { name, email, roleForUser } = req.body;
+  const { email, roleForUser } = req.body;
   try {
     if (role !== "SUPER_ADMIN")
       return resp
         .status(200)
         .json({ message: "please contact your administarator" });
-    const invitationExisits = await Invitation.findOne({email});
+    const invitationExisits = await Invitation.findOne({ email });
     if (invitationExisits)
-      return resp
-        .status(200)
-        .json({ message: `Invitation already exisits` });
+      return resp.status(200).json({ message: `Invitation already exisits` });
     const user = await userModel.findById({ _id });
     const { randomBytes } = crypto;
     const token = randomBytes(4).toString("hex");
     const invitation = await Invitation.create({
-      name,
       email,
       roleForUser,
       workspace: user.workspace,
@@ -30,8 +27,8 @@ const createInvitation = async (req, resp) => {
       host: "smtp.ethereal.email",
       port: 587,
       auth: {
-        user: "jade55@ethereal.email",
-        pass: "AXHqtnBfBZZJVy3p2v",
+        user: `${user.email}`,
+        pass: `${user.password}`,
       },
     });
     await transporter.sendMail({
