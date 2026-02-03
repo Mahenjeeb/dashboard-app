@@ -1,18 +1,18 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useState } from "react";
-import { useInterceptorAPI } from "@/api/interceptorAPI";
+import { interceptorAPI } from "@/api/interceptorAPI";
+import { useQuery } from "@tanstack/react-query";
+import { createContext, useContext } from "react";
 const UserContext = createContext(null);
 export const UserProvider = ({ children }) => {
-  const apiInstance = useInterceptorAPI();
-  const [usrData, setUsrData] = useState();
-  useEffect(() => {
-    (async () => {
-      const { data } = await apiInstance.get("/app/me");
-      setUsrData(data);
-    })();
-  }, []);
+  const instance = interceptorAPI();
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["authRes"],
+    queryFn: async () => await instance.get("/auth/me"),
+  });
   return (
-    <UserContext.Provider value={{ usrData }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ data, isError, isLoading }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 export const useUser = () => {

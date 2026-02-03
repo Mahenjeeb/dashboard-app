@@ -12,6 +12,6 @@ router.use(authenticate);
 router.post("/application", createApp);
 router.post("/workspace", createWorkspace);
 router.get("/all-workspace", getWorkspace);
-router.post("/invitation", createInvitation);
+router.post("/create-invitation", createInvitation);
 router.get("/users", getUsers);
 export default router;

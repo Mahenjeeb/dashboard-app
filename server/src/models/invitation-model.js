@@ -1,7 +1,6 @@
 import { Schema, model } from "mongoose";
 
 const invitationSchema = new Schema({
-  name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   roleForUser: { type: String, required: true },
   workspace: { type: Schema.Types.ObjectId, ref: "workspaces" },

@@ -3,7 +3,10 @@ import { Link, Outlet } from "react-router";
 import sidebarMenuItems from "@/data/sidebarMenuItems";
 import Navbar from "@/components/dashboard/Navbar";
 import Logo from "@/components/dashboard/Logo";
+import { useUser } from "@/context/UserContext";
 const Sidebar = () => {
+  const { data } = useUser();
+  const role = data?.data?.user?.role;
   return (
     <>
       <div className="drawer lg:drawer-open bg-gray-100">
@@ -19,7 +22,10 @@ const Sidebar = () => {
             <Logo />
             <ul className="menu w-full grow">
               {sidebarMenuItems.map((item) => (
-                <li key={item.text}>
+                <li
+                  key={item.text}
+                  className={`${role !== "SUPER_ADMIN" && item.isAdmin ? "hidden" : "block"}`}
+                >
                   <Link to={item.url} className="li-btn" data-tip={item.text}>
                     <item.icon className="sidebar-btn" />
                     <span className="li-span">{item.text}</span>

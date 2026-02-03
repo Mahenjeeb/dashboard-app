@@ -1,8 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import "@/components/dashboard/invitationform.css";
 import { Send } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { interceptorAPI } from "@/api/interceptorAPI";
 
 const CreateInvitation = ({ isOpen }) => {
+  const [invitation, setInvitation] = useState({
+    email: "",
+    roleForUser: "",
+  });
+  const instance = interceptorAPI();
+  const mutation = useMutation({
+    mutationFn: async () => await instance.post("app/create-invitation", invitation),
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setInvitation((prev) => ({ ...prev, [name]: value }));
+  };
   return (
     <>
       {isOpen && (
@@ -13,6 +28,9 @@ const CreateInvitation = ({ isOpen }) => {
               <legend className="fieldset-legend">Email</legend>
               <input
                 type="email"
+                name="email"
+                value={invitation.email}
+                onChange={handleInputChange}
                 className="input validator w-full"
                 placeholder="text@gmail.com"
                 required
@@ -20,15 +38,28 @@ const CreateInvitation = ({ isOpen }) => {
             </fieldset>
             <fieldset className="fieldset w-full md:max-w-xs">
               <legend className="fieldset-legend">Select a role</legend>
-              <select defaultValue="" className="select w-full" required>
+              <select
+                name="roleForUser"
+                value={invitation.roleForUser}
+                onChange={handleInputChange}
+                className="select w-full"
+                required
+              >
                 <option value="" disabled>
-                  Role
+                  -- Select Role --
                 </option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value="SUPER_ADMIN">Admin</option>
+                <option value="USER">User</option>
               </select>
             </fieldset>
-            <button type="submit" className="btn mb-1 md:self-end">
+            <button
+              type="submit"
+              className="btn mb-1 md:self-end"
+              onClick={(e) => {
+                e.preventDefault();
+                mutation.mutate(invitation);
+              }}
+            >
               <Send size={16} />
               Invite
             </button>

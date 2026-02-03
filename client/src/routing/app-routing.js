@@ -6,7 +6,6 @@ import Signup from "@/components/user_auth/Signup";
 import PageNotFound from "@/pages/PageNotFound";
 import { commonLoader } from "@/api/commonLoader";
 import MainLayout from "@/layout/MainLayout";
-
 export const routes = [
   {
     path: "/signup",
