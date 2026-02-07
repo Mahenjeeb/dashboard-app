@@ -13,14 +13,17 @@ export const interceptorAPI = () => {
   apiInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const originalRequest = error.config;      
+      const originalRequest = error.config;
+      if (originalRequest.url?.includes("/auth/")) {
+        return Promise.reject(error);
+      }
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
           await apiInstance.post("/auth/refresh");
           return apiInstance(originalRequest);
         } catch (error) {
-          toast.error("Session Expired...")
+          toast.error("Session Expired...");
           return Promise.reject(error);
         }
       }

@@ -5,8 +5,10 @@ import Navbar from "@/components/dashboard/Navbar";
 import Logo from "@/components/dashboard/Logo";
 import { useUser } from "@/context/UserContext";
 const Sidebar = () => {
-  const { data } = useUser();
-  const role = data?.data?.user?.role;
+  const { user } = useUser();
+  const role = user.user?.role;
+  console.log(role);
+  
   return (
     <>
       <div className="drawer lg:drawer-open bg-gray-100">

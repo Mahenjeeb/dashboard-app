@@ -8,8 +8,9 @@ const invitationSchema = new Schema({
   token: String,
   expireAt: {
     type: Date,
-    expires: Date.now() + 2 * 24 * 60 * 60 * 1000,
-    default: Date.now(),
+    required: true,
+    default: () => new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    index: { expires: 0 },
   },
 });
 

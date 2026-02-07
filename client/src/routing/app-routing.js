@@ -12,6 +12,10 @@ export const routes = [
     Component: Signup,
   },
   {
+    path: "/404",
+    Component: PageNotFound,
+  },
+  {
     Component: ProtectedRoute,
     children: [
       {
