@@ -1,11 +1,6 @@
 import React from "react";
 import "@/components/table/table.css";
-import { useLoaderData } from "react-router";
-import useGetdata from "@/hooks/useGetdata";
 const Table = () => {
-  const pathname = useLoaderData();
-  const { data } = useGetdata(pathname);
-  console.log(data);
   return (
     <>
       <div className="overflow-x-auto shadow-lg rounded-md px-4 py-2 border-gray-200">

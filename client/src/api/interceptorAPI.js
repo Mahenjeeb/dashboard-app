@@ -1,5 +1,4 @@
 import axios from "axios";
-import toast from "react-hot-toast";
 export const interceptorAPI = () => {
   // const serverURL = import.meta.env.VITE_SERVER_URL;
   const apiInstance = axios.create({
@@ -14,7 +13,7 @@ export const interceptorAPI = () => {
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
-      if (originalRequest.url?.includes("/auth/")) {
+      if (originalRequest.url?.includes("/auth/login")) {
         return Promise.reject(error);
       }
       if (error.response?.status === 401 && !originalRequest._retry) {
@@ -23,7 +22,6 @@ export const interceptorAPI = () => {
           await apiInstance.post("/auth/refresh");
           return apiInstance(originalRequest);
         } catch (error) {
-          toast.error("Session Expired...");
           return Promise.reject(error);
         }
       }

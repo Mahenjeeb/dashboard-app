@@ -1,12 +1,14 @@
 import express from "express";
-import dotenv from "dotenv";
+import "dotenv/config";
 import connectDatabase from "./src/config/database.js";
 import userRouter from "./src/routes/auth_router.js";
-import appRouter from "./src/routes/app_router.js";
+import {
+  app_private_router,
+  app_public_router,
+} from "./src/routes/app_router.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 
-dotenv.config();
 const app = express();
 
 /* Trust proxy for Render */
@@ -17,7 +19,8 @@ app.use(cookieParser());
 await connectDatabase(process.env.MONGODB_URL);
 /* API Routes */
 app.use("/api/auth", userRouter);
-app.use("/api/app", appRouter);
+app.use("/api/app", app_private_router);
+app.use("/api/app", app_public_router);
 /* Health Check */
 app.get("/api/health", (_, res) => {
   res.status(200).json({ status: "ok" });

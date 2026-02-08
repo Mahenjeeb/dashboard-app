@@ -3,7 +3,7 @@ const userschema = new Schema(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, default: "SUPER_ADMIN" },
+    role: { type: String },
     isActive: { type: Boolean, default: true },
     workspace: { type: String, ref: "workspaces" },
     refreshToken: [String],

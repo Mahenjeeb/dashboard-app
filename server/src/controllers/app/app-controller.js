@@ -18,9 +18,7 @@ const createApp = async (req, resp) => {
         appDesc,
         appUrl,
         workspace: user.workspace,
-      });
-      console.log("application", app);
-      
+      });  
       return resp
         .status(201)
         .json({ message: `${app.appName} Created Successfully` });

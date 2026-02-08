@@ -4,14 +4,19 @@ import {
   createWorkspace,
   getWorkspace,
 } from "../controllers/app/workspace-controller.js";
-import createInvitation from "../controllers/app/invitation-controller.js";
+import {
+  createInvitation,
+  checkInvitation,
+} from "../controllers/app/invitation-controller.js";
 import { getUsers } from "../controllers/app/user-controller.js";
 import authenticate from "../middleware/auth-middleware.js";
-const router = express.Router();
-router.use(authenticate);
-router.post("/application", createApp);
-router.post("/workspace", createWorkspace);
-router.get("/all-workspace", getWorkspace);
-router.post("/create-invitation", createInvitation);
-router.get("/users", getUsers);
-export default router;
+const app_private_router = express.Router();
+const app_public_router = express.Router();
+app_private_router.use(authenticate);
+app_private_router.post("/application", createApp);
+app_private_router.post("/workspace", createWorkspace);
+app_private_router.get("/all-workspace", getWorkspace);
+app_private_router.post("/create-invitation", createInvitation);
+app_private_router.get("/users", getUsers);
+app_public_router.post("/accept", checkInvitation);
+export { app_private_router, app_public_router };

@@ -4,6 +4,7 @@ import Environment from "@/pages/Environment";
 import ProtectedRoute from "./ProtectedRoute";
 import Signup from "@/components/user_auth/Signup";
 import PageNotFound from "@/pages/PageNotFound";
+import AcceptInvitation from "@/pages/AcceptInvitation"
 import { commonLoader } from "@/api/commonLoader";
 import MainLayout from "@/layout/MainLayout";
 export const routes = [
@@ -39,6 +40,10 @@ export const routes = [
         ],
       },
     ],
+  },
+  {
+    path: "accept",
+    Component: AcceptInvitation
   },
   {
     path: "*",

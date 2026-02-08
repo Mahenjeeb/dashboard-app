@@ -7,8 +7,6 @@ import { useUser } from "@/context/UserContext";
 const Sidebar = () => {
   const { user } = useUser();
   const role = user.user?.role;
-  console.log(role);
-  
   return (
     <>
       <div className="drawer lg:drawer-open bg-gray-100">

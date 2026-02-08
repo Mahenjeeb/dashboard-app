@@ -8,7 +8,7 @@ import {
 } from "../../utils/auth-service.js";
 
 const signup = async (req, resp) => {
-  const { email, password, role = "USER" } = req.body;
+  const { email, password} = req.body;
   if (!email) {
     return resp.status(400).json({ message: "Email is required" });
   }
@@ -22,7 +22,7 @@ const signup = async (req, resp) => {
     const signUpUserObj = {
       email,
       password: hashedPassword,
-      role,
+      role : "SUPER_ADMIN",
     };
     await userModel.create(signUpUserObj);
     return resp.status(201).json({ message: "Account created" });
