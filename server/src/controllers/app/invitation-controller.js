@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import Invitation from "../../models/invitation-model.js";
 import userModel from "../../models/user_model.js";
-import { sendMail } from "./nodemailer-controller.js";
+import { sendMail } from "./resend-controller.js";
 import bcrypt from "bcrypt";
 
 const createInvitation = async (req, resp) => {
