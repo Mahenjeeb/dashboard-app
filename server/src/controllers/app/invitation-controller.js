@@ -24,6 +24,7 @@ const createInvitation = async (req, resp) => {
       workspace: user.workspace,
       token,
     });
+    resp.status(200).json({ message: "Invitation Created" });
     const to = invitation.email;
     const html = `
       <h2>You are invited</h2>
@@ -32,8 +33,9 @@ const createInvitation = async (req, resp) => {
         Accept Invitation
       </a>
     `;
-    await sendMail(to, html);
-    return resp.status(200).json({ message: "Invitation Created" });
+     sendMail(to, html).catch(error => {
+      console.error('Failed to send invitation email:', error);
+    });
   } catch (error) {
     return resp.status(400).json({ message: error.message });
   }
