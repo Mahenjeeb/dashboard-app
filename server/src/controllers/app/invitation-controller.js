@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import Invitation from "../../models/invitation-model.js";
 import userModel from "../../models/user_model.js";
-import { sendMail } from "./resend-controller.js";
+import { sendMail } from "./mail-controller.js";
 import bcrypt from "bcrypt";
 
 const createInvitation = async (req, resp) => {
@@ -33,9 +33,7 @@ const createInvitation = async (req, resp) => {
         Accept Invitation
       </a>
     `;
-     sendMail(to, html).catch(error => {
-      console.error('Failed to send invitation email:', error);
-    });
+    await sendMail(to, html);
   } catch (error) {
     return resp.status(400).json({ message: error.message });
   }
