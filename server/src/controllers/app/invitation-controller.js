@@ -5,9 +5,9 @@ import { sendMail } from "./mail-controller.js";
 import bcrypt from "bcrypt";
 
 const createInvitation = async (req, resp) => {
-  const { role, _id } = req.user;
-  const { email, roleForUser } = req.body;
   try {
+    const { role, _id } = req.user;
+    const { email, roleForUser } = req.body;
     if (role !== "SUPER_ADMIN")
       return resp
         .status(200)
@@ -24,18 +24,22 @@ const createInvitation = async (req, resp) => {
       workspace: user.workspace,
       token,
     });
-    resp.status(200).json({ message: "Invitation Created" });
-    const to = invitation.email;
     const html = `
-      <h2>You are invited</h2>
-      <p>Click below to accept invitation:</p>
-      <a href="${process.env.CLIENT_URL}/accept?itoken=${invitation.token}">
-        Accept Invitation
-      </a>
-    `;
-    await sendMail(to, html);
+       <h2>You are invited</h2>
+       <p>Click below to accept invitation:</p>
+       <a href="${process.env.CLIENT_URL}/accept?itoken=${invitation.token}">
+         Accept Invitation
+       </a>
+     `;
+    await sendMail(invitation.email, html);
+    return resp.status(200).json({
+      message: "Invitation created and email sent successfully",
+    });
   } catch (error) {
-    return resp.status(400).json({ message: error.message });
+    console.log(error, "invitation error");
+    return resp.status(500).json({
+      message: error.message,
+    });
   }
 };
 

@@ -1,27 +1,16 @@
-import nodemailer from "nodemailer";
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  family: 4,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-  connectionTimeout: 10000, // 10s
-  greetingTimeout: 10000,
+import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
+const mailerSend = new MailerSend({
+  apiKey: process.env.MAILERSEND_API_KEY,
 });
-
-export const sendMail = async (to, html) => {
-  try {
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to,
-      subject: "App Invitation",
-      html,
-    });
-  } catch (error) {
-    console.error("Mail error:", error);
-  }
+export const sendMail = async (toEmail, html) => {
+  const sentFrom = new Sender(process.env.MAILERSEND_EMAIL, "Dashboard App");
+  const recipients = [new Recipient(toEmail, "Dashboard App")];
+  const emailParams = new EmailParams()
+    .setFrom(sentFrom)
+    .setTo(recipients)
+    .setReplyTo(sentFrom)
+    .setSubject("App Invitation")
+    .setHtml(html)
+    .setText(html);
+  await mailerSend.email.send(emailParams);
 };
