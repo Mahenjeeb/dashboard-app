@@ -1,16 +1,12 @@
-import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
-const mailerSend = new MailerSend({
-  apiKey: process.env.MAILERSEND_API_KEY,
-});
+import { BrevoClient } from '@getbrevo/brevo';
+
+const brevo = new BrevoClient({ apiKey: process.env.EMAIL_API_KEY });
 export const sendMail = async (toEmail, html) => {
-  const sentFrom = new Sender(process.env.MAILERSEND_EMAIL, "Dashboard App");
-  const recipients = [new Recipient(toEmail, "Dashboard App")];
-  const emailParams = new EmailParams()
-    .setFrom(sentFrom)
-    .setTo(recipients)
-    .setReplyTo(sentFrom)
-    .setSubject("App Invitation")
-    .setHtml(html)
-    .setText(html);
-  await mailerSend.email.send(emailParams);
+  const result = await brevo.transactionalEmails.sendTransacEmail({
+    subject: "You're invited to join Authrol",
+    htmlContent: html,
+    sender: { name: 'Authrol', email: 'no-reply@mahenjeeb.online' },
+    to: [{ email: toEmail }],
+  });
+  console.log('Email sent. Message ID:', result.messageId);
 };

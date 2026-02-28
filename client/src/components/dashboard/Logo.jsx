@@ -22,7 +22,7 @@ const Logo = () => {
           ></path>
         </svg>
         <span className="text-xl font-semibold is-drawer-close:hidden">
-          Dashboard
+          Authrol
         </span>
       </Link>
     </>
