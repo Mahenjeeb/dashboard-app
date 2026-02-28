@@ -1,2 +1,2 @@
-# dashboard-app
-A Simple dashboard app using MERN
+# Authrol
+A simple Authrol app using the MERN stack
