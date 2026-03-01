@@ -1,72 +1,190 @@
-import React, { useState } from "react";
-import "@/components/dashboard/invitationform.css";
-import { Send } from "lucide-react";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import { useMutation } from "@tanstack/react-query";
 import { interceptorAPI } from "@/api/interceptorAPI";
+import toast from "react-hot-toast";
+
+const defaultInvitation = {
+  email: "",
+  roleForUser: "",
+};
+
+const allowedRoles = ["SUPER_ADMIN", "USER"];
 
 const CreateInvitation = ({ isOpen }) => {
-  const [invitation, setInvitation] = useState({
-    email: "",
-    roleForUser: "",
-  });
+  const [invitation, setInvitation] = useState(defaultInvitation);
+  const [errors, setErrors] = useState({ email: "", roleForUser: "" });
   const instance = interceptorAPI();
-  const mutation = useMutation({
-    mutationFn: async () => await instance.post("app/create-invitation", invitation),
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload) => {
+      const response = await instance.post("app/create-invitation", payload);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      const message = data?.message || "Invitation request processed";
+      const normalizedMessage = message.toLowerCase();
+
+      if (
+        normalizedMessage.includes("already exisits") ||
+        normalizedMessage.includes("already exists") ||
+        normalizedMessage.includes("please contact")
+      ) {
+        toast.error(message);
+        return;
+      }
+
+      if (normalizedMessage.includes("successfully")) {
+        toast.success(message);
+        setInvitation(defaultInvitation);
+        setErrors({ email: "", roleForUser: "" });
+        return;
+      }
+
+      toast(message);
+    },
+    onError: (err) => {
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to create invitation. Try again later",
+      );
+    },
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
     setInvitation((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
+
+  const validate = () => {
+    const nextErrors = { email: "", roleForUser: "" };
+    let isValid = true;
+
+    const email = invitation.email.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      nextErrors.email = "Email is required";
+      isValid = false;
+    } else if (!emailPattern.test(email)) {
+      nextErrors.email = "Enter a valid email address";
+      isValid = false;
+    }
+
+    if (!invitation.roleForUser) {
+      nextErrors.roleForUser = "Role is required";
+      isValid = false;
+    } else if (!allowedRoles.includes(invitation.roleForUser)) {
+      nextErrors.roleForUser = "Role is invalid";
+      isValid = false;
+    }
+
+    setErrors(nextErrors);
+    return isValid;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!validate()) {
+      return;
+    }
+
+    mutate({
+      email: invitation.email.trim().toLowerCase(),
+      roleForUser: invitation.roleForUser,
+    });
+  };
+
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <>
-      {isOpen && (
-        <div className="mb-10">
-          <h3 className="text-2xl mb-5 text-zinc-700">Invite a user</h3>
-          <form method="post" className="flex gap-4">
-            <fieldset className="fieldset w-full md:max-w-sm">
-              <legend className="fieldset-legend">Email</legend>
-              <input
-                type="email"
-                name="email"
-                value={invitation.email}
-                onChange={handleInputChange}
-                className="input validator w-full"
-                placeholder="text@gmail.com"
-                required
-              />
-            </fieldset>
-            <fieldset className="fieldset w-full md:max-w-xs">
-              <legend className="fieldset-legend">Select a role</legend>
-              <select
+    <Card>
+      <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+        <Stack spacing={2.5}>
+          <Box>
+            <Typography variant="h6">Invite Team Member</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Send a secure invitation to grant access to your workspace.
+            </Typography>
+          </Box>
+
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{
+              display: "grid",
+              gap: 2,
+              gridTemplateColumns: { xs: "1fr", md: "1.5fr 1fr auto" },
+              alignItems: "end",
+            }}
+          >
+            <TextField
+              fullWidth
+              label="Email Address"
+              name="email"
+              type="email"
+              value={invitation.email}
+              onChange={handleInputChange}
+              error={Boolean(errors.email)}
+              helperText={errors.email || " "}
+              disabled={isPending}
+            />
+
+            <FormControl fullWidth error={Boolean(errors.roleForUser)}>
+              <InputLabel id="invitation-role-label">Role</InputLabel>
+              <Select
+                labelId="invitation-role-label"
+                label="Role"
                 name="roleForUser"
                 value={invitation.roleForUser}
                 onChange={handleInputChange}
-                className="select w-full"
-                required
+                disabled={isPending}
               >
-                <option value="" disabled>
-                  -- Select Role --
-                </option>
-                <option value="SUPER_ADMIN">Admin</option>
-                <option value="USER">User</option>
-              </select>
-            </fieldset>
-            <button
+                <MenuItem value="SUPER_ADMIN">Admin</MenuItem>
+                <MenuItem value="USER">User</MenuItem>
+              </Select>
+              <Typography
+                variant="caption"
+                color="error"
+                sx={{ minHeight: 20, mt: 0.5, px: 1.75 }}
+              >
+                {errors.roleForUser || " "}
+              </Typography>
+            </FormControl>
+
+            <Button
               type="submit"
-              className="btn mb-1 md:self-end"
-              onClick={(e) => {
-                e.preventDefault();
-                mutation.mutate(invitation);
-              }}
+              variant="contained"
+              size="large"
+              disabled={isPending}
+              startIcon={<SendRoundedIcon />}
+              sx={{ minWidth: 150, height: 56 }}
             >
-              <Send size={16} />
-              Invite
-            </button>
-          </form>
-        </div>
-      )}
-    </>
+              {isPending ? "Inviting..." : "Send Invite"}
+            </Button>
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };
 
