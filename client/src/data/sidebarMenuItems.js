@@ -1,22 +1,25 @@
-import { Send, Settings2, Users } from "lucide-react";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
+import DataObjectRoundedIcon from "@mui/icons-material/DataObjectRounded";
+
 const sidebarMenuItems = [
   {
-    icon: Users,
-    url: "users",
+    icon: GroupOutlinedIcon,
+    url: "/users",
     text: "Users",
-    isAdmin: true
+    isAdmin: true,
   },
   {
-    icon: Send,
-    url: "invitations",
+    icon: MailOutlineRoundedIcon,
+    url: "/invitations",
     text: "Invitations",
-    isAdmin: true
+    isAdmin: true,
   },
   {
-    icon: Settings2,
+    icon: DataObjectRoundedIcon,
     url: "/environments",
     text: "Environment Variables",
-    isAdmin: false
+    isAdmin: false,
   },
 ];
 

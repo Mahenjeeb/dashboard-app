@@ -1,6 +1,0 @@
-@reference "tailwindcss";
-@plugin "daisyui";
-
-.table th {
-  @apply text-black;
-}
