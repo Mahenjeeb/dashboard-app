@@ -3,24 +3,13 @@ import toast from "react-hot-toast";
 import { interceptorAPI } from "@/api/interceptorAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
-import {
-  alpha,
-  Box,
-  Card,
-  CardContent,
-  CircularProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
+import { Box, Card, CardContent, CircularProgress, Stack, Typography } from "@mui/material";
 import AppButton from "@/components/common/AppButton";
 import AppTextField from "@/components/common/AppTextField";
 
 const defaultFormData = { email: "", password: "" };
 
 const Signup = () => {
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState(defaultFormData);
   const [isSignIn, setSignIn] = useState(() => searchParams.get("mode") !== "signup");
@@ -71,34 +60,17 @@ const Signup = () => {
     >
       <Card sx={{ width: "100%", maxWidth: 460 }}>
         <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
-          <Stack spacing={2.25}>
+          <Stack spacing={2.25} alignItems="center">
             <Box sx={{ textAlign: "center" }}>
-              <Box
-                sx={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  display: "grid",
-                  placeItems: "center",
-                  mx: "auto",
-                  mb: 1.25,
-                  backgroundColor: alpha(theme.palette.primary.main, 0.12),
-                  color: "primary.main",
-                }}
-              >
-                <AdminPanelSettingsRoundedIcon />
-              </Box>
-              <Typography variant="h5">
-                {isSignIn ? "Welcome Back" : "Create Admin Account"}
+              <Typography sx={{ fontSize: { xs: 22, sm: 24 }, lineHeight: 1.1, fontWeight: 700 }}>
+                {isSignIn ? "Sign In" : "Sign Up"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {isSignIn
-                  ? "Sign in to continue to your workspace dashboard"
-                  : "Register and start managing users securely"}
+                Use your email and password.
               </Typography>
             </Box>
 
-            <Box component="form" onSubmit={handleSubmit}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
               <Stack spacing={1.75}>
                 <AppTextField
                   name="email"
@@ -132,16 +104,17 @@ const Signup = () => {
                   }
                 >
                   {isPending
-                    ? "Please wait..."
+                    ? isSignIn
+                      ? "Signing in..."
+                      : "Signing up..."
                     : isSignIn
                       ? "Sign In"
-                      : "Create Account"}
+                      : "Sign Up"}
                 </AppButton>
               </Stack>
             </Box>
 
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>
-              {isSignIn ? "New user?" : "Already have an account?"}{" "}
               <AppButton
                 variant="text"
                 size="small"
@@ -151,8 +124,9 @@ const Signup = () => {
                   setSignIn((prev) => !prev);
                   setFormData(defaultFormData);
                 }}
-              >
-                {isSignIn ? "Register now" : "Sign in"}
+                >
+                {isSignIn ? "Sign Up" : "Sign In"}
+                {isSignIn ? "Don't have an account?" : "Already have an account?"}{" "}
               </AppButton>
             </Typography>
           </Stack>

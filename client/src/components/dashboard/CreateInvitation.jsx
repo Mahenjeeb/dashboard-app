@@ -211,7 +211,6 @@ const CreateInvitation = ({ isOpen }) => {
         <AuthLockOverlay
           title="Invitations are locked"
           description="Preview is available. Sign in to invite users."
-          ctaTo="?auth=signin"
         />
       )}
     </Box>

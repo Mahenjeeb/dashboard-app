@@ -5,8 +5,8 @@ import AppButton from "@/components/common/AppButton";
 
 const AuthLockOverlay = ({
   title = "Editing is locked",
-  description = "Sign in or create an account to edit this section.",
-  ctaLabel = "Sign In / Sign Up",
+  description = "Use the Sign In / Sign Up button in the navbar to edit this section.",
+  ctaLabel = "Sign in / up",
   ctaTo = "?auth=signin",
 }) => {
   return (
@@ -23,18 +23,20 @@ const AuthLockOverlay = ({
       }}
     >
       <Stack spacing={1.5} alignItems="center" sx={{ maxWidth: 320, textAlign: "center" }}>
-        <LockRoundedIcon color="primary" />
+        <Stack direction="row" spacing={1} alignItems="center">
+          <LockRoundedIcon color="primary" />
+          <AppButton
+            component={RouterLink}
+            to={ctaTo}
+            size="small"
+          >
+            {ctaLabel}
+          </AppButton>
+        </Stack>
         <Typography variant="subtitle1">{title}</Typography>
         <Typography variant="body2" color="text.secondary">
           {description}
         </Typography>
-        <AppButton
-          component={RouterLink}
-          to={ctaTo}
-          size="small"
-        >
-          {ctaLabel}
-        </AppButton>
       </Stack>
     </Box>
   );

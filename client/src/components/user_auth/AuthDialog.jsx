@@ -37,7 +37,7 @@ const AuthDialog = ({
 
   const isSignIn = mode !== "signup";
   const endpoint = isSignIn ? "login" : "signup";
-  const heading = isSignIn ? "Sign in to your account" : "Create your account";
+  const heading = isSignIn ? "Sign In" : "Sign Up";
   const accent = theme.palette.primary.main;
   const textPrimary = theme.palette.text.primary;
   const textSecondary = theme.palette.text.secondary;
@@ -100,19 +100,8 @@ const AuthDialog = ({
         },
       }}
     >
-      <DialogTitle sx={{ px: { xs: 2, sm: 2.5 }, pt: 1.75, pb: 0.75 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography
-            sx={{
-              fontSize: 13,
-              letterSpacing: "0.08em",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              color: alpha(accent, 0.9),
-            }}
-          >
-            Account Access
-          </Typography>
+      <DialogTitle sx={{ px: { xs: 2, sm: 2.5 }, pt: 1.25, pb: 0 }}>
+        <Stack direction="row" justifyContent="flex-end" alignItems="center">
           <IconButton
             aria-label="Close authentication dialog"
             disabled={isPending}
@@ -123,41 +112,26 @@ const AuthDialog = ({
           </IconButton>
         </Stack>
       </DialogTitle>
-      <DialogContent sx={{ px: { xs: 2, sm: 2.5 }, pb: 2.25, pt: 0.25 }}>
-        <Stack spacing={1.75} sx={{ maxWidth: 540, mx: "auto" }}>
-          <Box>
+      <DialogContent
+        sx={{ px: { xs: 2, sm: 2.5 }, pb: 2.25, pt: 0.5, display: "flex", justifyContent: "center" }}
+      >
+        <Stack spacing={1.75} sx={{ width: "100%", maxWidth: 420, mx: "auto", alignItems: "center" }}>
+          <Box sx={{ width: "100%", textAlign: "center" }}>
             <Typography
               sx={{
-                fontSize: { xs: 26, sm: 30 },
+                fontSize: { xs: 22, sm: 24 },
                 lineHeight: 1.1,
                 fontWeight: 700,
                 letterSpacing: "-0.01em",
                 color: textPrimary,
-                mb: 0.5,
+                mb: 0.25,
               }}
             >
               {heading}
             </Typography>
-            <Typography sx={{ color: textSecondary }}>
-              {isSignIn ? "Don't have an account? " : "Already have an account? "}
-              <Link
-                component="button"
-                type="button"
-                onClick={() => handleModeSwitch(isSignIn ? "signup" : "signin")}
-                disabled={isPending}
-                underline="hover"
-                sx={{
-                  color: accent,
-                  fontWeight: 700,
-                  textDecorationColor: alpha(accent, 0.5),
-                }}
-              >
-                {isSignIn ? "Sign up" : "Sign in"}
-              </Link>
-            </Typography>
           </Box>
 
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
             <Stack spacing={1}>
               <AppTextField
                 name="email"
@@ -196,31 +170,38 @@ const AuthDialog = ({
                 {isPending
                   ? isSignIn
                     ? "Signing in..."
-                    : "Creating account..."
+                    : "Signing up..."
                   : isSignIn
                     ? "Sign In"
-                    : "Create Account"}
+                    : "Sign Up"}
               </AppButton>
             </Stack>
           </Box>
-
           <Typography
             sx={{
+              width: "100%",
               textAlign: "center",
               color: textSecondary,
-              fontSize: 13,
-              pt: 0.25,
+              fontSize: 12,
+              lineHeight: 1.35,
             }}
           >
-            By continuing, you agree to the{" "}
-            <Box component="span" sx={{ color: accent, fontWeight: 700 }}>
-              Terms of Service
-            </Box>{" "}
-            and{" "}
-            <Box component="span" sx={{ color: accent, fontWeight: 700 }}>
-              Privacy Policy
-            </Box>
-            .
+            {isSignIn ? "Don't have an account? " : "Already have an account? "}
+            <Link
+              component="button"
+              type="button"
+              onClick={() => handleModeSwitch(isSignIn ? "signup" : "signin")}
+              disabled={isPending}
+              underline="hover"
+              sx={{
+                color: accent,
+                fontSize: 12,
+                fontWeight: 700,
+                textDecorationColor: alpha(accent, 0.5),
+              }}
+            >
+              {isSignIn ? "Sign Up" : "Sign In"}
+            </Link>
           </Typography>
         </Stack>
       </DialogContent>

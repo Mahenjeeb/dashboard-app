@@ -69,25 +69,13 @@ const UserMenu = ({ onOpenAuth, isAuthBusy = false }) => {
       <Stack direction="row" spacing={0.75} alignItems="center">
         {isAuthBusy && <CircularProgress size={18} />}
         <AppButton
-          variant="outlined"
+          variant="contained"
           size="small"
           disabled={isAuthBusy}
           onClick={() => onOpenAuth?.("signin")}
-          sx={{ minWidth: { xs: 72, sm: 84 }, height: 32, px: { xs: 1, sm: 1.25 } }}
+          sx={{ minWidth: { xs: 132, sm: 152 }, height: 32, px: { xs: 1.25, sm: 1.5 } }}
         >
-          Sign In
-        </AppButton>
-        <AppButton
-          size="small"
-          disabled={isAuthBusy}
-          onClick={() => onOpenAuth?.("signup")}
-          sx={{
-            minWidth: { xs: 72, sm: 84 },
-            height: 32,
-            px: { xs: 1, sm: 1.25 },
-          }}
-        >
-          Sign Up
+          Sign in / up
         </AppButton>
       </Stack>
     );

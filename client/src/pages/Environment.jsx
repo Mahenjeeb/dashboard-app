@@ -79,7 +79,6 @@ const Environment = () => {
               <AuthLockOverlay
                 title="Environment editing is locked"
                 description="You can view data, but editing requires sign in."
-                ctaTo="?auth=signin"
               />
             )}
           </Box>
