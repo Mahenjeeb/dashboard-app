@@ -2,12 +2,13 @@ import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import { Box, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router";
 import AppButton from "@/components/common/AppButton";
+import { AUTH_ENTRY_LABEL, AUTH_ENTRY_QUERY } from "@/constants/auth-ui";
 
 const AuthLockOverlay = ({
   title = "Editing is locked",
-  description = "Use the Sign In / Sign Up button in the navbar to edit this section.",
-  ctaLabel = "Sign in / up",
-  ctaTo = "?auth=signin",
+  description = `Use the ${AUTH_ENTRY_LABEL} button in the navbar to edit this section.`,
+  ctaLabel = AUTH_ENTRY_LABEL,
+  ctaTo = AUTH_ENTRY_QUERY,
 }) => {
   return (
     <Box

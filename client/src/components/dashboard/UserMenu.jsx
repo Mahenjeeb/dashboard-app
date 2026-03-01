@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { interceptorAPI } from "@/api/interceptorAPI";
 import toast from "react-hot-toast";
 import AppButton from "@/components/common/AppButton";
+import { AUTH_ENTRY_LABEL } from "@/constants/auth-ui";
 
 const UserMenu = ({ onOpenAuth, isAuthBusy = false }) => {
   const { user, isAuthenticated } = useUser();
@@ -75,7 +76,7 @@ const UserMenu = ({ onOpenAuth, isAuthBusy = false }) => {
           onClick={() => onOpenAuth?.("signin")}
           sx={{ minWidth: { xs: 132, sm: 152 }, height: 32, px: { xs: 1.25, sm: 1.5 } }}
         >
-          Sign in / up
+          {AUTH_ENTRY_LABEL}
         </AppButton>
       </Stack>
     );

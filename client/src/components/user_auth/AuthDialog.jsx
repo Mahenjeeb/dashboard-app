@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { interceptorAPI } from "@/api/interceptorAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,6 +21,26 @@ import AppButton from "@/components/common/AppButton";
 import AppTextField from "@/components/common/AppTextField";
 
 const defaultFormData = { email: "", password: "" };
+const authModeConfig = {
+  signin: {
+    endpoint: "login",
+    heading: "Sign In",
+    submitLabel: "Sign In",
+    pendingLabel: "Signing in...",
+    switchPrompt: "Don't have an account?",
+    switchLabel: "Sign Up",
+    nextMode: "signup",
+  },
+  signup: {
+    endpoint: "signup",
+    heading: "Sign Up",
+    submitLabel: "Sign Up",
+    pendingLabel: "Signing up...",
+    switchPrompt: "Already have an account?",
+    switchLabel: "Sign In",
+    nextMode: "signin",
+  },
+};
 
 const AuthDialog = ({
   open,
@@ -34,23 +54,25 @@ const AuthDialog = ({
   const apiInstance = useMemo(() => interceptorAPI(), []);
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState(defaultFormData);
+  const currentMode = mode === "signup" ? "signup" : "signin";
+  const modeConfig = authModeConfig[currentMode];
 
-  const isSignIn = mode !== "signup";
-  const endpoint = isSignIn ? "login" : "signup";
-  const heading = isSignIn ? "Sign In" : "Sign Up";
   const accent = theme.palette.primary.main;
   const textPrimary = theme.palette.text.primary;
   const textSecondary = theme.palette.text.secondary;
+  const notifyPendingChange = useEffectEvent((pending) => {
+    onPendingChange?.(pending);
+  });
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["userAuthDialog", endpoint],
+    mutationKey: ["userAuthDialog", modeConfig.endpoint],
     mutationFn: async (payload) => {
-      const response = await apiInstance.post(`/auth/${endpoint}`, payload);
+      const response = await apiInstance.post(`/auth/${modeConfig.endpoint}`, payload);
       return response.data;
     },
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: ["authMe"] });
-      toast.success(data?.message || (isSignIn ? "Signed in" : "Account created"));
+      toast.success(data?.message || (currentMode === "signin" ? "Signed in" : "Account created"));
       handleClose();
     },
     onError: (error) => {
@@ -59,8 +81,8 @@ const AuthDialog = ({
   });
 
   useEffect(() => {
-    onPendingChange?.(isPending);
-  }, [isPending, onPendingChange]);
+    notifyPendingChange(isPending);
+  }, [isPending]);
 
   const handleClose = () => {
     setFormData(defaultFormData);
@@ -70,6 +92,11 @@ const AuthDialog = ({
   const handleModeSwitch = (nextMode) => {
     setFormData(defaultFormData);
     onModeChange?.(nextMode);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (event) => {
@@ -127,7 +154,7 @@ const AuthDialog = ({
                 mb: 0.25,
               }}
             >
-              {heading}
+              {modeConfig.heading}
             </Typography>
           </Box>
 
@@ -141,9 +168,7 @@ const AuthDialog = ({
                 fullWidth
                 disabled={isPending}
                 value={formData.email}
-                onChange={(event) =>
-                  setFormData((prev) => ({ ...prev, email: event.target.value }))
-                }
+                onChange={handleInputChange}
               />
               <AppTextField
                 name="password"
@@ -153,9 +178,7 @@ const AuthDialog = ({
                 fullWidth
                 disabled={isPending}
                 value={formData.password}
-                onChange={(event) =>
-                  setFormData((prev) => ({ ...prev, password: event.target.value }))
-                }
+                onChange={handleInputChange}
               />
               <AppButton
                 type="submit"
@@ -168,12 +191,8 @@ const AuthDialog = ({
                 }}
               >
                 {isPending
-                  ? isSignIn
-                    ? "Signing in..."
-                    : "Signing up..."
-                  : isSignIn
-                    ? "Sign In"
-                    : "Sign Up"}
+                  ? modeConfig.pendingLabel
+                  : modeConfig.submitLabel}
               </AppButton>
             </Stack>
           </Box>
@@ -186,11 +205,11 @@ const AuthDialog = ({
               lineHeight: 1.35,
             }}
           >
-            {isSignIn ? "Don't have an account? " : "Already have an account? "}
+            {modeConfig.switchPrompt}{" "}
             <Link
               component="button"
               type="button"
-              onClick={() => handleModeSwitch(isSignIn ? "signup" : "signin")}
+              onClick={() => handleModeSwitch(modeConfig.nextMode)}
               disabled={isPending}
               underline="hover"
               sx={{
@@ -200,7 +219,7 @@ const AuthDialog = ({
                 textDecorationColor: alpha(accent, 0.5),
               }}
             >
-              {isSignIn ? "Sign Up" : "Sign In"}
+              {modeConfig.switchLabel}
             </Link>
           </Typography>
         </Stack>
