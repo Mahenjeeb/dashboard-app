@@ -1,21 +1,24 @@
 import { useState } from "react";
 import {
   Box,
-  Button,
   Card,
   CardContent,
+  FormHelperText,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import { useMutation } from "@tanstack/react-query";
 import { interceptorAPI } from "@/api/interceptorAPI";
 import toast from "react-hot-toast";
+import { useUser } from "@/context/UserContext";
+import AuthLockOverlay from "./AuthLockOverlay";
+import AppButton from "@/components/common/AppButton";
+import AppTextField from "@/components/common/AppTextField";
 
 const defaultInvitation = {
   email: "",
@@ -25,6 +28,7 @@ const defaultInvitation = {
 const allowedRoles = ["SUPER_ADMIN", "USER"];
 
 const CreateInvitation = ({ isOpen }) => {
+  const { isAuthenticated } = useUser();
   const [invitation, setInvitation] = useState(defaultInvitation);
   const [errors, setErrors] = useState({ email: "", roleForUser: "" });
   const instance = interceptorAPI();
@@ -100,6 +104,10 @@ const CreateInvitation = ({ isOpen }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!isAuthenticated) {
+      toast.error("Please sign in to create invitations");
+      return;
+    }
 
     if (!validate()) {
       return;
@@ -116,75 +124,97 @@ const CreateInvitation = ({ isOpen }) => {
   }
 
   return (
-    <Card>
-      <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
-        <Stack spacing={2.5}>
-          <Box>
-            <Typography variant="h6">Invite Team Member</Typography>
-            <Typography variant="body2" color="text.secondary">
-              Send a secure invitation to grant access to your workspace.
-            </Typography>
-          </Box>
-
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{
-              display: "grid",
-              gap: 2,
-              gridTemplateColumns: { xs: "1fr", md: "1.5fr 1fr auto" },
-              alignItems: "end",
-            }}
-          >
-            <TextField
-              fullWidth
-              label="Email Address"
-              name="email"
-              type="email"
-              value={invitation.email}
-              onChange={handleInputChange}
-              error={Boolean(errors.email)}
-              helperText={errors.email || " "}
-              disabled={isPending}
-            />
-
-            <FormControl fullWidth error={Boolean(errors.roleForUser)}>
-              <InputLabel id="invitation-role-label">Role</InputLabel>
-              <Select
-                labelId="invitation-role-label"
-                label="Role"
-                name="roleForUser"
-                value={invitation.roleForUser}
-                onChange={handleInputChange}
-                disabled={isPending}
-              >
-                <MenuItem value="SUPER_ADMIN">Admin</MenuItem>
-                <MenuItem value="USER">User</MenuItem>
-              </Select>
-              <Typography
-                variant="caption"
-                color="error"
-                sx={{ minHeight: 20, mt: 0.5, px: 1.75 }}
-              >
-                {errors.roleForUser || " "}
+    <Box sx={{ position: "relative" }}>
+      <Card>
+        <CardContent sx={{ p: { xs: 2, md: 2.25 } }}>
+          <Stack spacing={2}>
+            <Box>
+              <Typography variant="h6">Invite Team Member</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Send a secure invitation to grant access to your workspace.
               </Typography>
-            </FormControl>
+            </Box>
 
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={isPending}
-              startIcon={<SendRoundedIcon />}
-              sx={{ minWidth: 150, height: 56 }}
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{
+                display: "grid",
+                gap: 1.25,
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "minmax(0, 1.5fr) minmax(0, 1fr)",
+                },
+                alignItems: "start",
+              }}
             >
-              {isPending ? "Inviting..." : "Send Invite"}
-            </Button>
-          </Box>
-        </Stack>
-      </CardContent>
-    </Card>
+              <AppTextField
+                fullWidth
+                label="Email Address"
+                name="email"
+                type="email"
+                value={invitation.email}
+                onChange={handleInputChange}
+                error={Boolean(errors.email)}
+                helperText={errors.email || undefined}
+                disabled={isPending || !isAuthenticated}
+                sx={{
+                  gridColumn: { xs: "1", sm: "1 / 2" },
+                }}
+              />
+
+              <FormControl
+                fullWidth
+                error={Boolean(errors.roleForUser)}
+                size="small"
+                sx={{ gridColumn: { xs: "1", sm: "2 / 3" } }}
+              >
+                <InputLabel id="invitation-role-label">Role</InputLabel>
+                <Select
+                  labelId="invitation-role-label"
+                  label="Role"
+                  name="roleForUser"
+                  value={invitation.roleForUser}
+                  onChange={handleInputChange}
+                  disabled={isPending || !isAuthenticated}
+                >
+                  <MenuItem value="SUPER_ADMIN">Admin</MenuItem>
+                  <MenuItem value="USER">User</MenuItem>
+                </Select>
+                {Boolean(errors.roleForUser) && (
+                  <FormHelperText sx={{ mt: 0.5, mx: 0 }}>{errors.roleForUser}</FormHelperText>
+                )}
+              </FormControl>
+
+              <AppButton
+                type="submit"
+                size="large"
+                disabled={isPending || !isAuthenticated}
+                startIcon={<SendRoundedIcon />}
+                sx={{
+                  gridColumn: { xs: "1", sm: "1 / -1" },
+                  justifySelf: { xs: "stretch", sm: "end" },
+                  width: { xs: "100%", sm: "auto" },
+                  minWidth: { xs: "100%", sm: 160 },
+                  height: 36,
+                  mt: { xs: 0.25, sm: 0.5 },
+                }}
+              >
+                {isPending ? "Inviting..." : "Send Invite"}
+              </AppButton>
+            </Box>
+          </Stack>
+        </CardContent>
+      </Card>
+      {!isAuthenticated && (
+        <AuthLockOverlay
+          title="Invitations are locked"
+          description="Preview is available. Sign in to invite users."
+          ctaTo="?auth=signin"
+        />
+      )}
+    </Box>
   );
 };
 

@@ -2,7 +2,6 @@ import Table from "@/components/table/Table";
 import Invitations from "@/pages/Invitations";
 import Environment from "@/pages/Environment";
 import ProtectedRoute from "./ProtectedRoute";
-import Signup from "@/components/user_auth/Signup";
 import PageNotFound from "@/pages/PageNotFound";
 import AcceptInvitation from "@/pages/AcceptInvitation";
 import { commonLoader } from "@/api/commonLoader";
@@ -12,7 +11,12 @@ import { redirect } from "react-router";
 export const routes = [
   {
     path: "/signup",
-    Component: Signup,
+    loader: ({ request }) => {
+      const mode = new URL(request.url).searchParams.get("mode") === "signup"
+        ? "signup"
+        : "signin";
+      return redirect(`/users?auth=${mode}`);
+    },
   },
   {
     path: "/404",

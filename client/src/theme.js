@@ -1,4 +1,4 @@
-import { alpha, createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 const primaryMain = "#2563EB";
 
@@ -27,12 +27,12 @@ export const theme = createTheme({
       main: "#EF4444",
     },
     background: {
-      default: "#F3F7FB",
+      default: "#F7F8FA",
       paper: "#FFFFFF",
     },
   },
   shape: {
-    borderRadius: 14,
+    borderRadius: 8,
   },
   typography: {
     fontFamily:
@@ -55,10 +55,32 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        html: {
+          scrollbarWidth: "thin",
+          scrollbarColor: "#BFC5CE #EEF1F4",
+        },
         body: {
-          background:
-            "radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.08), transparent 42%), radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.08), transparent 36%), #F3F7FB",
+          backgroundColor: "#F7F8FA",
           color: "#0F172A",
+        },
+        "*": {
+          scrollbarWidth: "thin",
+          scrollbarColor: "#BFC5CE #EEF1F4",
+        },
+        "*::-webkit-scrollbar": {
+          width: 7,
+          height: 7,
+        },
+        "*::-webkit-scrollbar-track": {
+          background: "#EEF1F4",
+        },
+        "*::-webkit-scrollbar-thumb": {
+          backgroundColor: "#BFC5CE",
+          borderRadius: 8,
+          border: "1px solid #EEF1F4",
+        },
+        "*::-webkit-scrollbar-thumb:hover": {
+          backgroundColor: "#AAB2BD",
         },
       },
     },
@@ -66,19 +88,29 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: "none",
-          border: "1px solid rgba(15, 23, 42, 0.06)",
-          boxShadow: "0px 14px 30px rgba(15, 23, 42, 0.08)",
+          border: "1px solid rgba(15, 23, 42, 0.08)",
+          boxShadow: "0 6px 18px rgba(15, 23, 42, 0.08)",
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          border: "1px solid rgba(15, 23, 42, 0.08)",
+          boxShadow: "0 8px 20px rgba(15, 23, 42, 0.08)",
+          borderRadius: 8,
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha("#FFFFFF", 0.8),
-          backdropFilter: "blur(14px)",
+          backgroundColor: "#FFFFFF",
           borderBottom: "1px solid rgba(15, 23, 42, 0.08)",
           boxShadow: "none",
           color: "#0F172A",
+          borderRadius: 0,
         },
       },
     },
@@ -86,8 +118,7 @@ export const theme = createTheme({
       styleOverrides: {
         paper: {
           borderRight: "1px solid rgba(15, 23, 42, 0.08)",
-          backgroundColor: alpha("#FFFFFF", 0.92),
-          backdropFilter: "blur(10px)",
+          backgroundColor: "#FFFFFF",
         },
       },
     },
@@ -95,9 +126,47 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "none",
-          borderRadius: 10,
+          borderRadius: 8,
           fontWeight: 600,
+          minHeight: 34,
+          padding: "6px 12px",
+          boxShadow: "0 1px 2px rgba(15, 23, 42, 0.12)",
+          "&:hover": {
+            boxShadow: "0 2px 8px rgba(15, 23, 42, 0.14)",
+          },
+        },
+        sizeSmall: {
+          minHeight: 30,
+          padding: "4px 10px",
+        },
+        sizeLarge: {
+          minHeight: 38,
+          padding: "7px 14px",
+        },
+        outlined: {
           boxShadow: "none",
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          padding: "14px",
+          "&:last-child": {
+            paddingBottom: "14px",
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        size: "small",
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
         },
       },
     },
@@ -105,6 +174,87 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#FFFFFF",
+          borderRadius: 8,
+          color: "#0F172A",
+          "& fieldset": {
+            borderColor: "rgba(15, 23, 42, 0.66)",
+          },
+          "&:hover fieldset": {
+            borderColor: "rgba(15, 23, 42, 0.86)",
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: "rgba(15, 23, 42, 0.96)",
+          },
+          "& .MuiInputBase-input": {
+            padding: "8px 10px",
+            color: "#0F172A",
+            "&::placeholder": {
+              color: "rgba(51, 65, 85, 0.62)",
+              opacity: 1,
+            },
+          },
+          "& textarea.MuiInputBase-input": {
+            padding: "8px 10px",
+            color: "#0F172A",
+            "&::placeholder": {
+              color: "rgba(51, 65, 85, 0.62)",
+              opacity: 1,
+            },
+          },
+          "& .MuiSelect-icon": {
+            color: "rgba(15, 23, 42, 0.8)",
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "rgba(15, 23, 42, 0.72)",
+          "&.Mui-focused": {
+            color: "rgba(15, 23, 42, 0.88)",
+          },
+          "&.Mui-disabled": {
+            color: "rgba(51, 65, 85, 0.52)",
+          },
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          border: "1px solid rgba(15, 23, 42, 0.08)",
+          boxShadow: "0 2px 8px rgba(15, 23, 42, 0.06)",
+          backgroundColor: "#FFFFFF",
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          padding: "10px 12px",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
         },
       },
     },
@@ -112,6 +262,14 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           fontWeight: 600,
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
         },
       },
     },

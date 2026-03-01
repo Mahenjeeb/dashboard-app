@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Card,
   CardContent,
@@ -67,24 +66,24 @@ const metricCards = [
 const TablePage = () => {
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h4">Users</Typography>
-        <Typography variant="body2" color="text.secondary">
-          Monitor user access, roles, and recent activity.
-        </Typography>
-      </Box>
-
       <Grid container spacing={2}>
         {metricCards.map((item) => {
           const Icon = item.icon;
           return (
             <Grid key={item.title} size={{ xs: 12, sm: 6, md: 4 }}>
-              <Paper sx={{ p: 2.25, display: "flex", alignItems: "center", gap: 1.5 }}>
+              <Paper
+                sx={{
+                  p: { xs: 1.5, sm: 2 },
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                }}
+              >
                 <Box
                   sx={{
                     width: 42,
                     height: 42,
-                    borderRadius: 2,
+                    borderRadius: 0,
                     display: "grid",
                     placeItems: "center",
                     color: "primary.main",
@@ -106,14 +105,10 @@ const TablePage = () => {
       </Grid>
 
       <Card>
-        <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+        <CardContent sx={{ p: { xs: 2, md: 2.25 } }}>
           <Stack spacing={2}>
-            <Alert severity="info" variant="outlined">
-              This table uses sample data right now. Wire your users API response here if needed.
-            </Alert>
-
-            <TableContainer>
-              <Table>
+            <TableContainer sx={{ overflowX: "auto" }}>
+              <Table sx={{ minWidth: 860 }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>

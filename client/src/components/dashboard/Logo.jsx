@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { Link as RouterLink } from "react-router";
 
-const Logo = () => {
+const Logo = ({ collapsed = false }) => {
   return (
     <Box
       component={RouterLink}
@@ -10,33 +10,30 @@ const Logo = () => {
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: 1.25,
-        px: 2.5,
-        py: 2.25,
+        justifyContent: collapsed ? "center" : "flex-start",
+        gap: 1,
+        px: collapsed ? 1 : 1.5,
+        py: 1.5,
       }}
     >
       <Box
         sx={{
-          width: 36,
-          height: 36,
-          borderRadius: 2,
+          width: 34,
+          height: 34,
+          borderRadius: 0,
           display: "grid",
           placeItems: "center",
-          background: "linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)",
+          backgroundColor: "primary.main",
           color: "#FFFFFF",
-          boxShadow: "0 8px 16px rgba(37, 99, 235, 0.35)",
         }}
       >
         <AutoAwesomeRoundedIcon fontSize="small" />
       </Box>
-      <Box>
+      {!collapsed && (
         <Typography variant="subtitle1" sx={{ lineHeight: 1.1, color: "text.primary" }}>
           Authrol
         </Typography>
-        <Typography variant="caption" sx={{ color: "text.secondary" }}>
-          Admin Console
-        </Typography>
-      </Box>
+      )}
     </Box>
   );
 };

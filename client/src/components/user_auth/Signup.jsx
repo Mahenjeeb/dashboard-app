@@ -2,23 +2,28 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { interceptorAPI } from "@/api/interceptorAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import {
+  alpha,
   Box,
-  Button,
   Card,
   CardContent,
   CircularProgress,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
+import AppButton from "@/components/common/AppButton";
+import AppTextField from "@/components/common/AppTextField";
+
+const defaultFormData = { email: "", password: "" };
 
 const Signup = () => {
-  const defaultFormData = { email: "", password: "" };
+  const theme = useTheme();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState(defaultFormData);
-  const [isSignIn, setSignIn] = useState(true);
+  const [isSignIn, setSignIn] = useState(() => searchParams.get("mode") !== "signup");
 
   const url = isSignIn ? "login" : "signup";
   const apiInstance = interceptorAPI();
@@ -77,8 +82,7 @@ const Signup = () => {
                   placeItems: "center",
                   mx: "auto",
                   mb: 1.25,
-                  background:
-                    "linear-gradient(135deg, rgba(37,99,235,0.16), rgba(14,165,233,0.16))",
+                  backgroundColor: alpha(theme.palette.primary.main, 0.12),
                   color: "primary.main",
                 }}
               >
@@ -96,7 +100,7 @@ const Signup = () => {
 
             <Box component="form" onSubmit={handleSubmit}>
               <Stack spacing={1.75}>
-                <TextField
+                <AppTextField
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
@@ -108,7 +112,7 @@ const Signup = () => {
                   fullWidth
                 />
 
-                <TextField
+                <AppTextField
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -119,9 +123,8 @@ const Signup = () => {
                   fullWidth
                 />
 
-                <Button
+                <AppButton
                   type="submit"
-                  variant="contained"
                   size="large"
                   disabled={isPending}
                   startIcon={
@@ -133,15 +136,16 @@ const Signup = () => {
                     : isSignIn
                       ? "Sign In"
                       : "Create Account"}
-                </Button>
+                </AppButton>
               </Stack>
             </Box>
 
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>
               {isSignIn ? "New user?" : "Already have an account?"}{" "}
-              <Button
+              <AppButton
                 variant="text"
                 size="small"
+                color="primary"
                 sx={{ textTransform: "none", fontWeight: 700 }}
                 onClick={() => {
                   setSignIn((prev) => !prev);
@@ -149,7 +153,7 @@ const Signup = () => {
                 }}
               >
                 {isSignIn ? "Register now" : "Sign in"}
-              </Button>
+              </AppButton>
             </Typography>
           </Stack>
         </CardContent>

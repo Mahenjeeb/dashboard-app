@@ -39,7 +39,7 @@ const statusColorMap = {
 const InvitationDetails = () => {
   return (
     <Card>
-      <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+      <CardContent sx={{ p: { xs: 2, md: 2.25 } }}>
         <Stack spacing={2}>
           <div>
             <Typography variant="h6">Invitation Activity</Typography>
@@ -48,8 +48,8 @@ const InvitationDetails = () => {
             </Typography>
           </div>
 
-          <TableContainer>
-            <Table size="small">
+          <TableContainer sx={{ overflowX: "auto" }}>
+            <Table size="small" sx={{ minWidth: 520 }}>
               <TableHead>
                 <TableRow>
                   <TableCell>Email</TableCell>

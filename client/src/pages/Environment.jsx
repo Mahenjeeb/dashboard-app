@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Divider,
@@ -13,10 +12,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
+import { useUser } from "@/context/UserContext";
+import AuthLockOverlay from "@/components/dashboard/AuthLockOverlay";
+import AppButton from "@/components/common/AppButton";
+import AppTextField from "@/components/common/AppTextField";
 
 const variableRows = [
   { key: "JWT_SECRET", value: "**************", scope: "Production" },
@@ -25,46 +27,72 @@ const variableRows = [
 ];
 
 const Environment = () => {
+  const { isAuthenticated } = useUser();
+
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h4">Environment Variables</Typography>
-        <Typography variant="body2" color="text.secondary">
-          Configure keys and runtime settings used by your workspace.
-        </Typography>
-      </Box>
-
       <Grid container spacing={2.5}>
         <Grid size={{ xs: 12, md: 5 }}>
-          <Card>
-            <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
-              <Stack spacing={2}>
-                <Typography variant="h6">Add New Variable</Typography>
-                <TextField label="Key" placeholder="API_BASE_URL" fullWidth />
-                <TextField label="Value" placeholder="https://api.your-app.com" fullWidth />
-                <TextField label="Environment" placeholder="Production" fullWidth />
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <Switch defaultChecked />
-                  <Typography variant="body2" color="text.secondary">
-                    Mark as encrypted value
-                  </Typography>
+          <Box sx={{ position: "relative" }}>
+            <Card>
+              <CardContent sx={{ p: { xs: 2, md: 2.25 } }}>
+                <Stack spacing={2}>
+                  <Typography variant="h6">Add New Variable</Typography>
+                  <AppTextField
+                    label="Key"
+                    placeholder="API_BASE_URL"
+                    fullWidth
+                    disabled={!isAuthenticated}
+                  />
+                  <AppTextField
+                    label="Value"
+                    placeholder="https://api.your-app.com"
+                    fullWidth
+                    disabled={!isAuthenticated}
+                  />
+                  <AppTextField
+                    label="Environment"
+                    placeholder="Production"
+                    fullWidth
+                    disabled={!isAuthenticated}
+                  />
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={1}
+                    alignItems={{ xs: "flex-start", sm: "center" }}
+                  >
+                    <Switch defaultChecked disabled={!isAuthenticated} />
+                    <Typography variant="body2" color="text.secondary">
+                      Mark as encrypted value
+                    </Typography>
+                  </Stack>
+                  <AppButton
+                    startIcon={<SaveRoundedIcon />}
+                    disabled={!isAuthenticated}
+                  >
+                    Save Variable
+                  </AppButton>
                 </Stack>
-                <Button variant="contained" startIcon={<SaveRoundedIcon />}>
-                  Save Variable
-                </Button>
-              </Stack>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+            {!isAuthenticated && (
+              <AuthLockOverlay
+                title="Environment editing is locked"
+                description="You can view data, but editing requires sign in."
+                ctaTo="?auth=signin"
+              />
+            )}
+          </Box>
         </Grid>
 
         <Grid size={{ xs: 12, md: 7 }}>
           <Card>
-            <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+            <CardContent sx={{ p: { xs: 2, md: 2.25 } }}>
               <Stack spacing={2}>
                 <Typography variant="h6">Existing Variables</Typography>
                 <Divider />
-                <TableContainer>
-                  <Table size="small">
+                <TableContainer sx={{ overflowX: "auto" }}>
+                  <Table size="small" sx={{ minWidth: 520 }}>
                     <TableHead>
                       <TableRow>
                         <TableCell>Key</TableCell>
