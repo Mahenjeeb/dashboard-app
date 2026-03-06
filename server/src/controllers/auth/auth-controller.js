@@ -8,7 +8,7 @@ import {
 } from "../../utils/auth-service.js";
 
 const signup = async (req, resp) => {
-  const { email, password} = req.body;
+  const { email, password } = req.body;
   if (!email) {
     return resp.status(400).json({ message: "Email is required" });
   }
@@ -22,7 +22,7 @@ const signup = async (req, resp) => {
     const signUpUserObj = {
       email,
       password: hashedPassword,
-      role : "SUPER_ADMIN",
+      role: "SUPER_ADMIN",
     };
     await userModel.create(signUpUserObj);
     return resp.status(201).json({ message: "Account created" });
@@ -64,6 +64,22 @@ const me = async (req, resp) => {
   return resp.status(200).json({ user });
 };
 
-const logout = async (req, resp) => {};
+const logout = async (req, resp) => {
+  try {
+    const { _id } = req.user;
+    const user = await userModel.findById({ _id });
+    const refreshToken = req.cookies?.refreshToken;
+    if (refreshToken) {
+      user.refreshToken = user.refreshToken.filter((rt) => rt !== refreshToken);
+      resp.clearCookie("refreshToken", baseConfig);
+      resp.clearCookie("accessToken", baseConfig);
+      return resp.status(200).json({ message: "Successfully Logged out" });
+    } else {
+      return resp.status(500).json({ message: "Internal Server Error" });
+    }
+  } catch (error) {
+    return resp.status(500).json({ message: error.message });
+  }
+};
 
 export { signup, login, logout, me };

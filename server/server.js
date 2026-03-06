@@ -19,8 +19,8 @@ app.use(cookieParser());
 await connectDatabase(process.env.MONGODB_URL);
 /* API Routes */
 app.use("/api/auth", userRouter);
-app.use("/api/app", app_private_router);
 app.use("/api/app", app_public_router);
+app.use("/api/app", app_private_router);
 /* Health Check */
 app.get("/api/health", (_, res) => {
   res.status(200).json({ status: "ok" });
