@@ -1,52 +1,17 @@
-import TextField from "@mui/material/TextField";
-import { alpha } from "@mui/material/styles";
+import { forwardRef } from "react";
+import { cn } from "@/lib/utils";
 
-const AppTextField = ({ sx, ...props }) => {
-  return (
-    <TextField
-      {...props}
-      sx={[
-        (theme) => {
-          return {
-            "& .MuiOutlinedInput-root": {
-              backgroundColor: "#FFFFFF",
-              color: "#0F172A",
-              "& fieldset": {
-                borderColor: alpha(theme.palette.common.black, 0.65),
-              },
-              "&:hover fieldset": {
-                borderColor: alpha(theme.palette.common.black, 0.85),
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: alpha(theme.palette.common.black, 0.95),
-              },
-              "& .MuiInputBase-input": {
-                color: "#0F172A",
-                "&::placeholder": {
-                  color: alpha(theme.palette.common.black, 0.48),
-                  opacity: 1,
-                },
-              },
-              "& .MuiSvgIcon-root": {
-                color: alpha(theme.palette.common.black, 0.78),
-              },
-            },
-            "& .MuiInputLabel-root": {
-              color: alpha(theme.palette.common.black, 0.7),
-              "&.Mui-focused": {
-                color: alpha(theme.palette.common.black, 0.88),
-              },
-            },
-            "& .MuiFormHelperText-root": {
-              marginTop: 4,
-              marginLeft: 0,
-            },
-          };
-        },
-        sx,
-      ]}
-    />
-  );
-};
+const AppTextField = forwardRef(({ className, ...props }, ref) => (
+  <input
+    ref={ref}
+    className={cn(
+      "w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-300",
+      className,
+    )}
+    {...props}
+  />
+));
+
+AppTextField.displayName = "AppTextField";
 
 export default AppTextField;

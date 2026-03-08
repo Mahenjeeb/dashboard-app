@@ -1,53 +1,45 @@
-import Table from "@/components/table/Table";
 import Invitations from "@/pages/Invitations";
 import Environment from "@/pages/Environment";
-import ProtectedRoute from "./ProtectedRoute";
 import PageNotFound from "@/pages/PageNotFound";
+import Signin from "@/pages/Signin";
+import SignupPage from "@/pages/Signup";
+import User from "@/pages/Users";
 import AcceptInvitation from "@/pages/AcceptInvitation";
-import { commonLoader } from "@/api/commonLoader";
 import MainLayout from "@/layout/MainLayout";
-import { redirect } from "react-router";
+import Settings from "@/pages/Settings";
 
 export const routes = [
   {
+    path: "/signin",
+    Component: Signin,
+  },
+  {
     path: "/signup",
-    loader: ({ request }) => {
-      const mode = new URL(request.url).searchParams.get("mode") === "signup"
-        ? "signup"
-        : "signin";
-      return redirect(`/users?auth=${mode}`);
-    },
+    Component: SignupPage,
   },
   {
-    path: "/404",
-    Component: PageNotFound,
-  },
-  {
-    Component: ProtectedRoute,
+    path: "/",
+    Component: MainLayout,
     children: [
       {
-        path: "/",
-        Component: MainLayout,
-        children: [
-          {
-            index: true,
-            loader: () => redirect("/users"),
-          },
-          {
-            path: "users",
-            Component: Table,
-            loader: commonLoader,
-          },
-          {
-            path: "invitations",
-            Component: Invitations,
-            loader: commonLoader,
-          },
-          {
-            path: "environments",
-            Component: Environment,
-          },
-        ],
+        index: true,
+        Component: Environment,
+      },
+      {
+        path: "settings",
+        Component: Settings,
+      },
+      {
+        path: "invitations",
+        Component: Invitations,
+      },
+      {
+        path: "users",
+        Component: User,
+      },
+      {
+        path: "environments",
+        Component: Environment,
       },
     ],
   },

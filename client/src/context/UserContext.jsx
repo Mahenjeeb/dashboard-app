@@ -15,11 +15,12 @@ export const UserProvider = ({ children }) => {
     retry: false,
     refetchOnWindowFocus: false,
   });
-  const isAuthenticated = !!data;
+  const user = data?.user ?? data ?? null;
+  const isAuthenticated = !!user;
   const isSessionExpired = isError;
   return (
     <UserContext.Provider
-      value={{ user: data, isLoading, isAuthenticated, isSessionExpired }}
+      value={{ user, isLoading, isAuthenticated, isSessionExpired }}
     >
       {children}
     </UserContext.Provider>

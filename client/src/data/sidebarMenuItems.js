@@ -1,25 +1,29 @@
-import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
-import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
-import DataObjectRoundedIcon from "@mui/icons-material/DataObjectRounded";
+import { Braces, Mail, Settings, Users } from "lucide-react";
 
 const sidebarMenuItems = [
   {
-    icon: GroupOutlinedIcon,
+    icon: Users,
     url: "/users",
     text: "Users",
-    isAdmin: true,
+    description: "Manage team members and access.",
   },
   {
-    icon: MailOutlineRoundedIcon,
+    icon: Mail,
     url: "/invitations",
     text: "Invitations",
-    isAdmin: true,
+    description: "Track pending invites and onboarding.",
   },
   {
-    icon: DataObjectRoundedIcon,
+    icon: Braces,
     url: "/environments",
     text: "Environment Variables",
-    isAdmin: false,
+    description: "View and maintain app configuration.",
+  },
+  {
+    icon: Settings,
+    url: "/settings",
+    text: "Settings",
+    description: "Update workspace preferences.",
   },
 ];
 

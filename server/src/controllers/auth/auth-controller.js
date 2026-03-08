@@ -8,9 +8,12 @@ import {
 } from "../../utils/auth-service.js";
 
 const signup = async (req, resp) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   if (!email) {
     return resp.status(400).json({ message: "Email is required" });
+  }
+  if(!name) {
+    return resp.status(400).json({ message: "Name is required" });
   }
   try {
     // Check for existing email
@@ -20,6 +23,7 @@ const signup = async (req, resp) => {
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     const signUpUserObj = {
+      name,
       email,
       password: hashedPassword,
       role: "SUPER_ADMIN",

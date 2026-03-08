@@ -1,7 +1,7 @@
-import Sidebar from "@/components/sidebar/Sidebar";
+import SidebarLayout from "./SidebarLayout";
 
 const MainLayout = () => {
-  return <Sidebar />;
+  return <SidebarLayout />;
 };
 
 export default MainLayout;

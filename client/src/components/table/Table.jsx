@@ -1,150 +1,92 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
-import PersonAddAlt1RoundedIcon from "@mui/icons-material/PersonAddAlt1Rounded";
-import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
+import { sampleUsers, userTableColumns } from "@/components/table/tablePresets";
 
-const sampleUsers = [
-  {
-    name: "Hart Hagerty",
-    email: "hart.hagerty@authrol.com",
-    role: "Admin",
-    location: "United States",
-    lastLogin: "12/05/2025",
-    status: "Active",
-  },
-  {
-    name: "Brice Swyre",
-    email: "brice.swyre@authrol.com",
-    role: "User",
-    location: "Canada",
-    lastLogin: "02/20/2026",
-    status: "Active",
-  },
-  {
-    name: "Marjy Ferencz",
-    email: "marjy.ferencz@authrol.com",
-    role: "User",
-    location: "Germany",
-    lastLogin: "02/18/2026",
-    status: "Inactive",
-  },
-];
+const getHeaderCellClassName = (column) =>
+  [
+    "px-4 py-3 text-sm font-semibold text-slate-500",
+    column.align === "right" ? "text-right" : "",
+    column.headerClassName ?? "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-const metricCards = [
-  {
-    title: "Total Users",
-    value: "128",
-    icon: GroupRoundedIcon,
-  },
-  {
-    title: "Pending Invites",
-    value: "14",
-    icon: PersonAddAlt1RoundedIcon,
-  },
-  {
-    title: "Security Score",
-    value: "94%",
-    icon: ShieldRoundedIcon,
-  },
-];
+const getBodyCellClassName = (column) =>
+  [
+    "px-4 py-3.5 align-top text-sm text-slate-600",
+    column.align === "right" ? "text-right" : "",
+    column.cellClassName ?? "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-const TablePage = () => {
+const defaultGetRowKey = (row, index) => row.id ?? row.email ?? row.token ?? index;
+
+const Table = ({
+  columns = userTableColumns,
+  rows = sampleUsers,
+  toolbar = null,
+  emptyMessage = "No rows available.",
+  getRowKey = defaultGetRowKey,
+}) => {
   return (
-    <Stack spacing={3}>
-      <Grid container spacing={2}>
-        {metricCards.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Grid key={item.title} size={{ xs: 12, sm: 6, md: 4 }}>
-              <Paper
-                sx={{
-                  p: { xs: 1.5, sm: 2 },
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1.5,
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 0,
-                    display: "grid",
-                    placeItems: "center",
-                    color: "primary.main",
-                    bgcolor: "rgba(37, 99, 235, 0.12)",
-                  }}
-                >
-                  <Icon fontSize="small" />
-                </Box>
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {item.title}
-                  </Typography>
-                  <Typography variant="h6">{item.value}</Typography>
-                </Box>
-              </Paper>
-            </Grid>
-          );
-        })}
-      </Grid>
+    <section className="flex h-full min-h-0 flex-col gap-4">
+      {toolbar}
 
-      <Card>
-        <CardContent sx={{ p: { xs: 2, md: 2.25 } }}>
-          <Stack spacing={2}>
-            <TableContainer sx={{ overflowX: "auto" }}>
-              <Table sx={{ minWidth: 860 }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Role</TableCell>
-                    <TableCell>Location</TableCell>
-                    <TableCell>Last Login</TableCell>
-                    <TableCell>Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sampleUsers.map((user) => (
-                    <TableRow key={user.email} hover>
-                      <TableCell>{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.role}</TableCell>
-                      <TableCell>{user.location}</TableCell>
-                      <TableCell>{user.lastLogin}</TableCell>
-                      <TableCell>
-                        <Chip
-                          size="small"
-                          label={user.status}
-                          color={user.status === "Active" ? "success" : "default"}
-                          variant={user.status === "Active" ? "filled" : "outlined"}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Stack>
-        </CardContent>
-      </Card>
-    </Stack>
+      <div className="min-h-0 flex flex-1 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 bg-slate-50">
+          <table className="min-w-full table-fixed text-left">
+            <colgroup>
+              {columns.map((column) => (
+                <col key={column.key} className={column.width} />
+              ))}
+            </colgroup>
+
+            <thead>
+              <tr>
+                {columns.map((column) => (
+                  <th key={column.key} className={getHeaderCellClassName(column)}>
+                    {column.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+        <div className="slim-scrollbar min-h-0 flex-1 overflow-auto">
+          <table className="min-w-full table-fixed text-left">
+            <colgroup>
+              {columns.map((column) => (
+                <col key={column.key} className={column.width} />
+              ))}
+            </colgroup>
+
+            <tbody className="divide-y divide-slate-200 bg-white">
+              {rows.length ? (
+                rows.map((row, index) => (
+                  <tr key={getRowKey(row, index)} className="transition hover:bg-slate-50">
+                    {columns.map((column) => (
+                      <td key={column.key} className={getBodyCellClassName(column)}>
+                        {column.render ? column.render(row, index) : row[column.key]}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="px-4 py-12 text-center text-sm text-slate-500"
+                  >
+                    {emptyMessage}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   );
 };
 
-export default TablePage;
+export default Table;
