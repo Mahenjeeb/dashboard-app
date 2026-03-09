@@ -1,19 +1,23 @@
-import AppButton from "@/components/common/AppButton";
-import AppTextField from "@/components/common/AppTextField";
-import Logo from "@/components/common/Logo";
+import TextField from "@/components/common/TextField";
+import CommonButton from "@/components/common/CommonButton";
 import { AUTH_SIGNIN_MODE, AUTH_SIGNUP_MODE } from "@/constants/auth-ui";
 import { Link } from "react-router";
 
 const authContent = {
   [AUTH_SIGNIN_MODE]: {
     title: "Sign In",
-    subtitle: "Access your dashboard workspace.",
+    subtitle: "Enter your account details to continue.",
     submitLabel: "Sign In",
     alternateText: "Don't have an account?",
     alternateAction: "Sign Up",
     alternateTo: "/signup",
     fields: [
-      { id: "email", type: "email", placeholder: "Enter your email", autoComplete: "email" },
+      {
+        id: "email",
+        type: "email",
+        placeholder: "Enter your email",
+        autoComplete: "email",
+      },
       {
         id: "password",
         type: "password",
@@ -24,14 +28,24 @@ const authContent = {
   },
   [AUTH_SIGNUP_MODE]: {
     title: "Sign Up",
-    subtitle: "Create a new account for your workspace.",
+    subtitle: "Create an account to get started.",
     submitLabel: "Create Account",
     alternateText: "Already have an account?",
     alternateAction: "Sign In",
     alternateTo: "/signin",
     fields: [
-      { id: "name", type: "text", placeholder: "Enter your full name", autoComplete: "name" },
-      { id: "email", type: "email", placeholder: "Enter your email", autoComplete: "email" },
+      {
+        id: "name",
+        type: "text",
+        placeholder: "Enter your full name",
+        autoComplete: "name",
+      },
+      {
+        id: "email",
+        type: "email",
+        placeholder: "Enter your email",
+        autoComplete: "email",
+      },
       {
         id: "password",
         type: "password",
@@ -42,62 +56,55 @@ const authContent = {
   },
 };
 
-const getToggleClassName = (isActive) =>
-  `rounded-lg px-4 py-2.5 text-center text-sm font-medium transition ${
-    isActive ? "bg-white text-slate-900 shadow-sm" : "hover:text-slate-700"
-  }`;
+const getTabClassName = (isActive) =>
+  `flex-1 rounded-md px-3 py-2 text-center text-sm ${isActive ? "bg-slate-900 text-white" : "text-slate-600"}`;
 
 const AuthScreen = ({ mode = AUTH_SIGNIN_MODE }) => {
   const content = authContent[mode] ?? authContent[AUTH_SIGNIN_MODE];
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8">
-      <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <div className="mb-6 flex justify-center">
-          <Logo />
-        </div>
-
-        <div className="grid grid-cols-2 rounded-xl bg-slate-100 p-1 text-sm font-medium text-slate-500">
-          <Link to="/signin" className={getToggleClassName(mode === AUTH_SIGNIN_MODE)}>
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4">
+      <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-6 flex rounded-md bg-slate-100 p-1">
+          <Link className={getTabClassName(mode === AUTH_SIGNIN_MODE)} to="/signin">
             Sign In
           </Link>
-
-          <Link to="/signup" className={getToggleClassName(mode === AUTH_SIGNUP_MODE)}>
+          <Link className={getTabClassName(mode === AUTH_SIGNUP_MODE)} to="/signup">
             Sign Up
           </Link>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-slate-900">{content.title}</h1>
-          <p className="mt-2 text-sm text-slate-500">{content.subtitle}</p>
+          <p className="mt-1 text-sm text-slate-600">{content.subtitle}</p>
         </div>
 
-        <form className="mt-6 space-y-4" onSubmit={(event) => event.preventDefault()}>
+        <form className="space-y-4 text-center" onSubmit={(event) => event.preventDefault()}>
           {content.fields.map((field) => (
-            <label key={field.id} className="block">
-              <AppTextField
-                name={field.id}
-                type={field.type}
-                placeholder={field.placeholder}
+            <div key={field.id}>
+              <TextField
                 autoComplete={field.autoComplete}
-                className="rounded-xl px-4 py-3"
+                className="h-10"
+                name={field.id}
+                placeholder={field.placeholder}
+                type={field.type}
               />
-            </label>
+            </div>
           ))}
 
-          <AppButton type="submit" className="h-12 w-full rounded-xl">
+          <CommonButton className="mt-2 h-10 w-full" type="submit">
             {content.submitLabel}
-          </AppButton>
+          </CommonButton>
         </form>
 
-        <p className="mt-6 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-slate-600">
           {content.alternateText}{" "}
-          <Link to={content.alternateTo} className="font-semibold text-slate-900 hover:text-slate-700">
+          <Link className="text-slate-900 underline" to={content.alternateTo}>
             {content.alternateAction}
           </Link>
         </p>
       </div>
-    </div>
+    </main>
   );
 };
 
