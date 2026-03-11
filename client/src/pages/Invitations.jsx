@@ -1,9 +1,22 @@
-// import CreateInvitation from "@/components/dashboard/CreateInvitation";
-// import Table from "@/components/table/Table";
+import PagePlaceholder from "@/components/common/PagePlaceholder";
+
 const Invitations = () => {
   return (
-    <div className="h-full min-h-0">
-    </div>
+    <PagePlaceholder
+      description="Review pending invitations and track workspace access."
+      items={[
+        {
+          label: "Pending",
+          value: "0 invitations",
+        },
+        {
+          label: "Last update",
+          value: "No recent activity",
+        },
+      ]}
+      eyebrow="Access"
+      title="Invitations"
+    />
   );
 };
 

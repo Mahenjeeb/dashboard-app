@@ -1,9 +1,19 @@
-import React from 'react'
-
 const PageNotFound = () => {
   return (
-    <div>PageNotFound</div>
-  )
-}
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
+          Error
+        </p>
+        <h1 className="mt-2 text-lg font-semibold text-slate-900">
+          Page not found
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          The page you requested is not available.
+        </p>
+      </section>
+    </main>
+  );
+};
 
-export default PageNotFound
+export default PageNotFound;

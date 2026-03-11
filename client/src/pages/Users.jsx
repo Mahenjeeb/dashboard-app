@@ -1,10 +1,22 @@
-// import Table from "@/components/table/Table";
+import PagePlaceholder from "@/components/common/PagePlaceholder";
 
 const Users = () => {
   return (
-    <div className="h-full min-h-0">
-      {/* <Table /> */}
-    </div>
+    <PagePlaceholder
+      description="View workspace members and manage access to internal tools."
+      items={[
+        {
+          label: "Members",
+          value: "0 active users",
+        },
+        {
+          label: "Roles",
+          value: "Not configured",
+        },
+      ]}
+      eyebrow="Directory"
+      title="Users"
+    />
   );
 };
 
