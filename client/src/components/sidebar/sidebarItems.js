@@ -2,9 +2,9 @@ import { Globe, Send, Settings2, Users } from "lucide-react";
 
 export const sidebarItems = [
   {
-    label: "Environment",
-    to: "/",
-    icon: Globe,
+    label: "Users",
+    to: "/users",
+    icon: Users,
   },
   {
     label: "Invitations",
@@ -12,9 +12,9 @@ export const sidebarItems = [
     icon: Send,
   },
   {
-    label: "Users",
-    to: "/users",
-    icon: Users,
+    label: "Environment",
+    to: "/",
+    icon: Globe,
   },
   {
     label: "Settings",

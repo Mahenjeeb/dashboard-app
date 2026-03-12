@@ -7,6 +7,7 @@ import User from "@/pages/Users";
 import AcceptInvitation from "@/pages/AcceptInvitation";
 import MainLayout from "@/layout/MainLayout";
 import Settings from "@/pages/Settings";
+import dataLoader from "@/util/dataLoader";
 
 export const routes = [
   {
@@ -22,24 +23,25 @@ export const routes = [
     Component: MainLayout,
     children: [
       {
-        index: true,
-        Component: Environment,
-      },
-      {
-        path: "settings",
-        Component: Settings,
+        path: "users",
+        Component: User,
+        loader: dataLoader
       },
       {
         path: "invitations",
         Component: Invitations,
       },
       {
-        path: "users",
-        Component: User,
+        index: true,
+        Component: Environment,
       },
       {
         path: "environments",
         Component: Environment,
+      },
+      {
+        path: "settings",
+        Component: Settings,
       },
     ],
   },

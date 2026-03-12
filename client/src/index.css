@@ -126,6 +126,23 @@
   html {
     @apply font-sans;
     }
+  button,
+  [role="button"] {
+    @apply cursor-pointer;
+    }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    transition: transform 120ms ease, opacity 120ms ease;
+    }
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: translateY(1px);
+    opacity: 0.96;
+    }
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    @apply cursor-not-allowed;
+    }
 }
 
 .slim-scrollbar {
