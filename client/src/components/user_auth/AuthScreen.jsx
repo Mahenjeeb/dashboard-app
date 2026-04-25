@@ -7,6 +7,47 @@ import { queryClient } from "@/util/queryClient";
 import { useMutation } from "@tanstack/react-query";
 import { interceptorAPI } from "@/api/interceptorAPI";
 
+const signInFields = [
+  {
+    id: "email",
+    label: "Email",
+    type: "email",
+    placeholder: "Email",
+    autoComplete: "email",
+  },
+  {
+    id: "password",
+    label: "Password",
+    type: "password",
+    placeholder: "Password",
+    autoComplete: "current-password",
+  },
+];
+
+const signUpFields = [
+  {
+    id: "name",
+    label: "Full name",
+    type: "text",
+    placeholder: "Full name",
+    autoComplete: "name",
+  },
+  {
+    id: "email",
+    label: "Email",
+    type: "email",
+    placeholder: "Email",
+    autoComplete: "email",
+  },
+  {
+    id: "password",
+    label: "Password",
+    type: "password",
+    placeholder: "Create a password",
+    autoComplete: "new-password",
+  },
+];
+
 const authContent = {
   [AUTH_SIGNIN_MODE]: {
     title: "Sign in",
@@ -16,22 +57,7 @@ const authContent = {
     alternateText: "Don't have an account?",
     alternateAction: "Sign Up",
     alternateTo: "/signup",
-    fields: [
-      {
-        id: "email",
-        label: "Email",
-        type: "email",
-        placeholder: "Email",
-        autoComplete: "email",
-      },
-      {
-        id: "password",
-        label: "Password",
-        type: "password",
-        placeholder: "Password",
-        autoComplete: "current-password",
-      },
-    ],
+    fields: signInFields,
   },
   [AUTH_SIGNUP_MODE]: {
     title: "Create account",
@@ -41,29 +67,7 @@ const authContent = {
     alternateText: "Already have an account?",
     alternateAction: "Sign In",
     alternateTo: "/signin",
-    fields: [
-      {
-        id: "name",
-        label: "Full name",
-        type: "text",
-        placeholder: "Full name",
-        autoComplete: "name",
-      },
-      {
-        id: "email",
-        label: "Email",
-        type: "email",
-        placeholder: "Email",
-        autoComplete: "email",
-      },
-      {
-        id: "password",
-        label: "Password",
-        type: "password",
-        placeholder: "Create a password",
-        autoComplete: "new-password",
-      },
-    ],
+    fields: signUpFields,
   },
 };
 
@@ -83,10 +87,12 @@ const AuthScreen = ({ mode = AUTH_SIGNIN_MODE }) => {
     password: "",
   };
   const [formData, setFormData] = useState(initialFormValue);
+  const [errorMessage, setErrorMessage] = useState("");
   const content = authContent[mode] ?? authContent[AUTH_SIGNIN_MODE];
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    setErrorMessage("");
     setFormData((currentFormData) => ({
       ...currentFormData,
       [name]: value,
@@ -105,8 +111,14 @@ const AuthScreen = ({ mode = AUTH_SIGNIN_MODE }) => {
     mutationFn: authenticateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["authMe"] });
+      setErrorMessage("");
       setFormData(initialFormValue);
       mode === AUTH_SIGNUP_MODE ? navigate("/signin") : navigate("/");
+    },
+    onError: (error) => {
+      setErrorMessage(
+        error.response?.data?.message ?? "We couldn't complete your request.",
+      );
     },
   });
 
@@ -145,6 +157,11 @@ const AuthScreen = ({ mode = AUTH_SIGNIN_MODE }) => {
           </div>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {errorMessage ? (
+              <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                {errorMessage}
+              </p>
+            ) : null}
             {content.fields.map((field) => (
               <label key={field.id} className="block" htmlFor={field.id}>
                 <span className="mb-2 block text-sm font-medium text-slate-700">

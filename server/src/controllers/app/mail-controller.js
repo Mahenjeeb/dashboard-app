@@ -10,6 +10,10 @@ export const sendMail = async (toEmail, subject, html, text) => {
     replyTo: { email: 'support@mahenjeeb.online' }
   };
 
-  const result = await brevo.transactionalEmails.sendTransacEmail(payload);
-  console.log('Email sent. Message ID:', result.messageId);
+  try {
+    const result = await brevo.transactionalEmails.sendTransacEmail(payload);
+    console.log('Email sent. Message ID:', result.messageId);
+  } catch (error) {
+    console.log("Brevo Error", error.message);
+  }
 };

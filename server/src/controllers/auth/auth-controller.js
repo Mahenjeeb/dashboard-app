@@ -6,13 +6,14 @@ import {
   expiryConfigAccess,
   generateToken,
 } from "../../utils/auth-service.js";
+import Workspace from "../../models/workspace_model.js";
 
 const signup = async (req, resp) => {
   const { name, email, password } = req.body;
   if (!email) {
     return resp.status(400).json({ message: "Email is required" });
   }
-  if(!name) {
+  if (!name) {
     return resp.status(400).json({ message: "Name is required" });
   }
   try {
@@ -26,9 +27,18 @@ const signup = async (req, resp) => {
       name,
       email,
       password: hashedPassword,
-      role: "SUPER_ADMIN",
+      role: 'super admin',
     };
-    await userModel.create(signUpUserObj);
+    const workspace_name = name.split(" ")[0];
+    const createdUser = await userModel.create(signUpUserObj);
+    const workspaceObj = {
+      workspace_name,
+      workspace_desc: `${workspace_name}'s workspace`,
+      ownerId: createdUser._id,
+    };
+    const createdWorkspace = await Workspace.create(workspaceObj);
+    createdUser.workspace = createdWorkspace._id;
+    await createdUser.save();
     return resp.status(201).json({ message: "Account created" });
   } catch (error) {
     console.error(error);
@@ -41,10 +51,10 @@ const login = async (req, resp) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
   if (!user)
-    return resp.status(404).json({ message: `${email} does not exists.` });
+    return resp.status(401).json({ message: "Invalid email or password." });
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch)
-    return resp.status(404).json({ message: "Wrong Password! Try again" });
+    return resp.status(401).json({ message: "Invalid email or password." });
   const { accessToken, newRefreshToken } = generateToken(user);
   if (refreshToken) {
     user.refreshToken = user.refreshToken.filter((rt) => rt !== refreshToken);

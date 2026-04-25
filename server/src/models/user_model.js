@@ -6,7 +6,7 @@ const userschema = new Schema(
     password: { type: String, required: true },
     role: { type: String },
     isActive: { type: Boolean, default: true },
-    workspace: { type: String, ref: "workspaces" },
+    workspace: { type: Schema.Types.ObjectId, ref: "workspaces" },
     refreshToken: [String],
   },
   { timestamps: true },
