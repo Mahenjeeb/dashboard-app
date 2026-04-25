@@ -13,16 +13,16 @@ const columns = [
     label: "Email",
   },
   {
-    key: "role",
+    key: "roleForUser",
     label: "Role",
   },
   {
-    key: "status",
+    key: "accepted",
     label: "Status",
   },
   {
-    key: "sentOn",
-    label: "Sent on",
+    key: "expireAt",
+    label: "Valid Upto",
   },
   {
     key: "action",
@@ -64,6 +64,15 @@ const Invitations = () => {
     event.preventDefault();
     mutate(formData);
   };
+
+  const getInvitedUsers = async () => {
+    const { data } = await api.get("app/invited-users");
+    return data;
+  };
+  const { data: invitedUserData } = useQuery({
+    queryKey: ["invited-users"],
+    queryFn: getInvitedUsers,
+  });
   return (
     <section className="mx-auto max-w-5xl space-y-4">
       <form method="post" onSubmit={submitInvitation}>
@@ -123,7 +132,7 @@ const Invitations = () => {
       <ResponsiveTable
         columns={columns}
         emptyMessage="No invitations sent yet."
-        rows={[]}
+        rows={invitedUserData}
         title="Invitations"
       />
     </section>

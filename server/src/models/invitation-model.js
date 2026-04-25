@@ -4,7 +4,7 @@ const invitationSchema = new Schema({
   email: { type: String, required: true, unique: true },
   roleForUser: { type: String, required: true },
   workspace: { type: Schema.Types.ObjectId, ref: "workspaces" },
-  accepted: { type: Boolean, default: false },
+  accepted: { type: String, default: "pending" },
   token: String,
   expireAt: {
     type: Date,

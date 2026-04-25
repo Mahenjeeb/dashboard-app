@@ -7,6 +7,7 @@ import {
 import {
   createInvitation,
   checkInvitation,
+  getInvitedUsers,
 } from "../controllers/app/invitation-controller.js";
 import { getUsers, getRoles } from "../controllers/app/user-controller.js";
 import authenticate from "../middleware/auth-middleware.js";
@@ -17,6 +18,7 @@ app_private_router.post("/application", createApp);
 app_private_router.post("/workspace", createWorkspace);
 app_private_router.get("/all-workspace", getWorkspace);
 app_private_router.post("/create-invitation", createInvitation);
+app_private_router.get("/invited-users", getInvitedUsers);
 app_private_router.get("/users", getUsers);
 app_private_router.get("/roles", getRoles);
 app_public_router.post("/accept", checkInvitation);

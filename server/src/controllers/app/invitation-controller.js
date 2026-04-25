@@ -72,7 +72,12 @@ const createInvitation = async (req, resp) => {
     // also prepare a plain-text fallback to improve deliverability
     const text = `You're invited to join Authrol!\n
 Visit the link below to accept the invitation:\n${inviteUrl}`;
-    await sendMail(invitation.email, "You're invited to join Authrol", html, text);
+    await sendMail(
+      invitation.email,
+      "You're invited to join Authrol",
+      html,
+      text,
+    );
     return resp.status(200).json({
       message: "Invitation created and email sent successfully",
     });
@@ -103,7 +108,7 @@ const checkInvitation = async (req, resp) => {
     const existingUser = await userModel.findOne({ email: invitation.email });
     if (existingUser) {
       if (!invitation.accepted) {
-        invitation.accepted = true;
+        invitation.accepted = 'accepted';
         await invitation.save();
       }
       return resp.status(200).json({ message: "Invitation already accepted" });
@@ -119,7 +124,7 @@ const checkInvitation = async (req, resp) => {
       workspace: invitation.workspace,
     });
 
-    invitation.accepted = true;
+    invitation.accepted = 'accepted';
     await invitation.save();
     if (!user)
       return resp.status(500).json({ message: "internal server error" });
@@ -128,5 +133,13 @@ const checkInvitation = async (req, resp) => {
     return resp.status(500).json({ message: error.message });
   }
 };
+const getInvitedUsers = async (req, resp) => {
+  try {
+    const invitations = await Invitation.find({});
+    return resp.status(200).send(invitations);
+  } catch (error) {
+    return resp.status(500).json({ message: error.message });
+  }
+};
 
-export { createInvitation, checkInvitation };
+export { createInvitation, checkInvitation, getInvitedUsers };
