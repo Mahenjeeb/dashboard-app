@@ -1,5 +1,6 @@
 import ResponsiveTable from "@/components/table/ResponsiveTable";
 import { useLoaderData } from "react-router";
+import { Edit } from "lucide-react";
 const Users = () => {
   const columns = [
     {
@@ -18,6 +19,10 @@ const Users = () => {
       key: "lastActive",
       label: "Last active",
     },
+    {
+      key: "action",
+      label: "Action"
+    },
   ];
   const loader = useLoaderData();
   const rows = loader.map((row) => ({
@@ -26,13 +31,14 @@ const Users = () => {
     role: row.role,
     status: row.isActive ? "Active" : "Inactive",
     lastActive: row.updatedAt,
+    action: "Action"
   }));
   return (
     <section className="mx-auto max-w-5xl">
       <ResponsiveTable
         columns={columns}
         emptyMessage="No users found."
-        rows={rows}
+        rows={rows || []}
         title="Users"
       />
     </section>

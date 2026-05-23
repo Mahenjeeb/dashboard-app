@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { LogOut, Settings } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { interceptorAPI } from "@/api/interceptorAPI";
+import { useNavigate } from "react-router";
 
 const ProfileDrawer = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
-
+  const api = interceptorAPI();
   const name = user?.name?.trim() || "Account";
   const email = user?.email?.trim() || "No email available";
   const avatarLetter = name.charAt(0).toUpperCase();
@@ -37,6 +39,13 @@ const ProfileDrawer = ({ user }) => {
     };
   }, [isOpen]);
 
+  let navigate = useNavigate();
+  const logOutUser = async () => {
+    const { data } = await api.get("/auth/logout");
+    console.log(data);
+    navigate("/signin");
+  };
+
   return (
     <div ref={containerRef} className="relative">
       <Button
@@ -55,7 +64,9 @@ const ProfileDrawer = ({ user }) => {
       {isOpen ? (
         <div className="absolute right-0 z-40 mt-2 w-64 rounded-2xl border border-slate-200/70 bg-white p-2 shadow-[0_14px_32px_rgba(15,23,42,0.08)]">
           <div className="rounded-xl px-3 py-2">
-            <p className="truncate text-sm font-medium text-slate-900">{name}</p>
+            <p className="truncate text-sm font-medium text-slate-900">
+              {name}
+            </p>
             <p className="truncate text-xs text-slate-500">{email}</p>
           </div>
 
@@ -73,6 +84,7 @@ const ProfileDrawer = ({ user }) => {
             <button
               className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50"
               type="button"
+              onClick={logOutUser}
             >
               <LogOut className="size-4" />
               Log out

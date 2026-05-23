@@ -1,11 +1,12 @@
 import CommonButton from "@/components/common/CommonButton";
-import SelectField from "@/components/common/SelectField";
-import TextField from "@/components/common/TextField";
+import EmailRoleForm from "@/components/common/EmailRoleForm";
 import ResponsiveTable from "@/components/table/ResponsiveTable";
 import { Send } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { interceptorAPI } from "@/api/interceptorAPI";
 import { useState } from "react";
+import { queryClient } from "@/util/queryClient";
+import { notifySuccess } from "@/util/notifications";
 
 const columns = [
   {
@@ -26,8 +27,7 @@ const columns = [
   },
   {
     key: "action",
-    label: "Action",
-    align: "right",
+    label: "Action"
   },
 ];
 
@@ -54,6 +54,8 @@ const Invitations = () => {
     mutationFn: createInvitation,
     onSuccess: async () => {
       setFormData(formInputIntitialValue);
+      await queryClient.invalidateQueries({ queryKey: ["invited-users"] });
+      notifySuccess("Invitation sent successfully.");
     },
   });
   const handleInputChange = async (event) => {
@@ -84,40 +86,11 @@ const Invitations = () => {
           </div>
 
           <div className="space-y-5 px-4 py-4 sm:px-5">
-            <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_220px]">
-              <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-700">
-                  Email address
-                </span>
-                <TextField
-                  className="h-10 bg-white"
-                  placeholder="name@company.com"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={(event) => handleInputChange(event)}
-                />
-              </label>
-
-              <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-700">Role</span>
-                <SelectField
-                  className="h-10"
-                  name="roleForUser"
-                  value={formData.roleForUser}
-                  onChange={(event) => handleInputChange(event)}
-                >
-                  <option value="" key="select">
-                    -- Select a Role --
-                  </option>
-                  {roles.map((role) => (
-                    <option value={role.role} key={role._id}>
-                      {role.role.toUpperCase()}
-                    </option>
-                  ))}
-                </SelectField>
-              </label>
-            </div>
+            <EmailRoleForm
+              formData={formData}
+              onChange={handleInputChange}
+              roles={roles}
+            />
 
             <div className="flex justify-end">
               <CommonButton className="h-10 px-4" type="submit">
@@ -132,7 +105,7 @@ const Invitations = () => {
       <ResponsiveTable
         columns={columns}
         emptyMessage="No invitations sent yet."
-        rows={invitedUserData}
+        rows={invitedUserData || []}
         title="Invitations"
       />
     </section>

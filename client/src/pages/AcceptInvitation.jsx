@@ -4,6 +4,7 @@ import CommonButton from "@/components/common/CommonButton";
 import { useMutation } from "@tanstack/react-query";
 import { interceptorAPI } from "@/api/interceptorAPI";
 import { useNavigate, useSearchParams } from "react-router";
+import { getErrorMessage, notifyError, notifySuccess } from "@/util/notifications";
 
 const initialFormData = {
   name: "",
@@ -44,11 +45,18 @@ const AcceptInvitation = () => {
       setIsInvitationAccepted(true);
       setSubmissionError("");
       setFormData(initialFormData);
+      notifySuccess("Invitation accepted successfully.");
     },
     onError: (error) => {
-      setSubmissionError(
-        error.response?.data?.message ?? "We couldn't finish setting up your account.",
+      const message = getErrorMessage(
+        error,
+        "We couldn't finish setting up your account.",
       );
+      setSubmissionError(message);
+      notifyError(error, "We couldn't finish setting up your account.");
+    },
+    meta: {
+      skipErrorToast: true,
     },
   });
 

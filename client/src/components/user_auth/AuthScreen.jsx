@@ -6,6 +6,7 @@ import { useState } from "react";
 import { queryClient } from "@/util/queryClient";
 import { useMutation } from "@tanstack/react-query";
 import { interceptorAPI } from "@/api/interceptorAPI";
+import { getErrorMessage, notifyError, notifySuccess } from "@/util/notifications";
 
 const signInFields = [
   {
@@ -113,12 +114,20 @@ const AuthScreen = ({ mode = AUTH_SIGNIN_MODE }) => {
       queryClient.invalidateQueries({ queryKey: ["authMe"] });
       setErrorMessage("");
       setFormData(initialFormValue);
+      notifySuccess(
+        mode === AUTH_SIGNUP_MODE
+          ? "Account created successfully. Please sign in."
+          : "Signed in successfully.",
+      );
       mode === AUTH_SIGNUP_MODE ? navigate("/signin") : navigate("/");
     },
     onError: (error) => {
-      setErrorMessage(
-        error.response?.data?.message ?? "We couldn't complete your request.",
-      );
+      const message = getErrorMessage(error, "We couldn't complete your request.");
+      setErrorMessage(message);
+      notifyError(error, "We couldn't complete your request.");
+    },
+    meta: {
+      skipErrorToast: true,
     },
   });
 

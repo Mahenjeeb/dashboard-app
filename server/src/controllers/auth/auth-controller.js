@@ -85,6 +85,7 @@ const logout = async (req, resp) => {
     const refreshToken = req.cookies?.refreshToken;
     if (refreshToken) {
       user.refreshToken = user.refreshToken.filter((rt) => rt !== refreshToken);
+      await user.save()
       resp.clearCookie("refreshToken", baseConfig);
       resp.clearCookie("accessToken", baseConfig);
       return resp.status(200).json({ message: "Successfully Logged out" });
