@@ -1,12 +1,28 @@
+import SearchBox from "../common/SearchBox";
 import TableAction from "./TableAction";
+import { SlidersHorizontal } from "lucide-react";
+
 const ResponsiveTable = ({ title, rows, emptyMessase, columns }) => {
   return (
     <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
       <div className="border-b border-slate-200 px-4 py-3.5 sm:px-5">
-        <div className="space-y-1">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-base font-semibold tracking-tight text-slate-900">
             {title}
           </h2>
+
+          <div className="flex w-full items-start gap-2 sm:w-auto">
+            <div className="relative min-w-0 flex-1 sm:w-64 sm:flex-none">
+              <SearchBox title={title} />
+            </div>
+            <button
+              aria-label={`Filter ${title}`}
+              className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-slate-100 text-slate-700 transition-colors hover:border-slate-400 hover:bg-white hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-200"
+              type="button"
+            >
+              <SlidersHorizontal className="size-4" />
+            </button>
+          </div>
         </div>
       </div>
 

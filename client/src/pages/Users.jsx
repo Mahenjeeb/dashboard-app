@@ -1,6 +1,5 @@
 import ResponsiveTable from "@/components/table/ResponsiveTable";
 import { useLoaderData } from "react-router";
-import { Edit } from "lucide-react";
 const Users = () => {
   const columns = [
     {
