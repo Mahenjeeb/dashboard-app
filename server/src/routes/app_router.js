@@ -16,7 +16,10 @@ import {
   deleteUser,
 } from "../controllers/app/user-controller.js";
 import authenticate from "../middleware/auth-middleware.js";
-import { getSearchSuggestionsForUser } from "../controllers/app/serach-controller.js";
+import {
+  getSearchSuggestionsForUser,
+  searchUsers,
+} from "../controllers/app/serach-controller.js";
 
 const app_private_router = express.Router();
 const app_public_router = express.Router();
@@ -34,5 +37,6 @@ app_private_router.post(
   "/users/get_search_suggestion",
   getSearchSuggestionsForUser,
 );
+app_private_router.get("/users/search", searchUsers);
 app_public_router.post("/accept", checkInvitation);
 export { app_private_router, app_public_router };

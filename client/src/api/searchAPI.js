@@ -7,3 +7,11 @@ export const getSearchSuggestionsForUser = async (query) => {
   return data;
 };
 
+export const searchUsers = async (query) => {
+  const { data } = await api.get(`/app/users/search`, {
+    params: {
+      query,
+    },
+  });
+  return data;
+};

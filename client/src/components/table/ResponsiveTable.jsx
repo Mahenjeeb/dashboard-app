@@ -1,8 +1,13 @@
+import { useState } from "react";
 import SearchBox from "../common/SearchBox";
 import TableAction from "./TableAction";
 import { SlidersHorizontal } from "lucide-react";
 
-const ResponsiveTable = ({ title, rows, emptyMessase, columns }) => {
+const ResponsiveTable = ({ title, rows, emptyMessage, emptyMessase, columns }) => {
+  const [tableSearchData, setTableSearchData] = useState(rows);
+  const displayRows = tableSearchData || rows || [];
+  const noDataMessage = emptyMessage || emptyMessase || "No data found.";
+  
   return (
     <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
       <div className="border-b border-slate-200 px-4 py-3.5 sm:px-5">
@@ -13,7 +18,7 @@ const ResponsiveTable = ({ title, rows, emptyMessase, columns }) => {
 
           <div className="flex w-full items-start gap-2 sm:w-auto">
             <div className="relative min-w-0 flex-1 sm:w-64 sm:flex-none">
-              <SearchBox title={title} />
+              <SearchBox {...{ title, setTableSearchData }} />
             </div>
             <button
               aria-label={`Filter ${title}`}
@@ -43,11 +48,30 @@ const ResponsiveTable = ({ title, rows, emptyMessase, columns }) => {
           </thead>
 
           <tbody>
-            {rows.map((row) => (
-              <tr className="transition-colors hover:bg-slate-50/40" key={row._id}>
+            {displayRows.length === 0 ? (
+              <tr>
+                <td
+                  className="px-4 py-12 text-center text-sm text-slate-500"
+                  colSpan={columns.length}
+                >
+                  {noDataMessage}
+                </td>
+              </tr>
+            ) : displayRows.map((row) => (
+              <tr
+                className="transition-colors hover:bg-slate-50/40"
+                key={row.id || row._id}
+              >
                 {columns.map((column) => (
-                  <td className="border-b border-slate-200 px-4 py-3 align-middle text-left text-sm text-slate-600" key={column.key}>
-                    {column.key === 'action' ? <TableAction details = {{row}}/> : row[column.key]}
+                  <td
+                    className="border-b border-slate-200 px-4 py-3 align-middle text-left text-sm text-slate-600"
+                    key={column.key}
+                  >
+                    {column.key === "action" ? (
+                      <TableAction details={{ row }} />
+                    ) : (
+                      row[column.key]
+                    )}
                   </td>
                 ))}
               </tr>
@@ -58,7 +82,7 @@ const ResponsiveTable = ({ title, rows, emptyMessase, columns }) => {
 
       <div className="grid gap-2 p-2 md:hidden">
         <div className="px-4 py-12 text-center text-sm text-slate-500">
-          {emptyMessase}
+          {displayRows.length === 0 ? noDataMessage : null}
         </div>
       </div>
     </section>

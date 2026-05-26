@@ -16,4 +16,18 @@ const getSearchSuggestionsForUser = async (req, resp) => {
   }
 };
 
-export { getSearchSuggestionsForUser };
+const searchUsers = async (req, resp) => {
+  const { query } = req.query;
+  const { _id } = req.user;
+  const searchCriteria = query
+    ? { _id: { $ne: _id }, email: query }
+    : { _id: { $ne: _id } };
+  try {
+    const searchData = await USERS.find(searchCriteria);
+    return resp.status(200).send(searchData);
+  } catch (error) {
+    return resp.status(500).json({ message: error.message });
+  }
+};
+
+export { getSearchSuggestionsForUser, searchUsers };
