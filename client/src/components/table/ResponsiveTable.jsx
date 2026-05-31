@@ -3,7 +3,7 @@ import SearchBox from "../common/SearchBox";
 import TableAction from "./TableAction";
 import { SlidersHorizontal } from "lucide-react";
 
-const ResponsiveTable = ({ title, rows, emptyMessage, emptyMessase, columns }) => {
+const ResponsiveTable = ({ title, rows, emptyMessage, emptyMessase, columns, collection }) => {
   const [tableSearchData, setTableSearchData] = useState(rows);
   const displayRows = tableSearchData || rows || [];
   const noDataMessage = emptyMessage || emptyMessase || "No data found.";
@@ -18,7 +18,7 @@ const ResponsiveTable = ({ title, rows, emptyMessage, emptyMessase, columns }) =
 
           <div className="flex w-full items-start gap-2 sm:w-auto">
             <div className="relative min-w-0 flex-1 sm:w-64 sm:flex-none">
-              <SearchBox {...{ title, setTableSearchData }} />
+              <SearchBox {...{ title, setTableSearchData, collection }} />
             </div>
             <button
               aria-label={`Filter ${title}`}

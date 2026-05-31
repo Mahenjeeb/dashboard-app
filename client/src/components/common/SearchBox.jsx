@@ -1,19 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { getSearchSuggestionsForUser, searchUsers } from "@/api/searchAPI";
+import { searchSuggestion, searchData } from "@/api/searchAPI";
 
-const SearchBox = ({ title, setTableSearchData }) => {
+const SearchBox = ({ title, setTableSearchData, collection }) => {
   const [suggestionData, setSuggestionData] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const hasMounted = useRef(false);
 
-  const { mutate } = useMutation({
-    mutationKey: ["USER_SEARCH_SUGGESTIONS"],
-    mutationFn: getSearchSuggestionsForUser,
-    onSuccess: setSuggestionData,
-  });
   const handleSearchChange = (e) => {
     const nextValue = e.target.value;
     setSearchInput(nextValue);
@@ -28,18 +22,22 @@ const SearchBox = ({ title, setTableSearchData }) => {
   const handleBlurSearch = () => {
     setShowSuggestions(false);
   };
-
-  const generateSearchDataForTable = useCallback(
-    async (value) => {
-      const usersSearchData = await searchUsers(value);
-      if (!usersSearchData) return;
-      const formattedSearchData = usersSearchData.map((row) => ({
-        id: row._id,
-        email: row.email,
-        role: row.role,
-        status: row.isActive ? "Active" : "Inactive",
-        lastActive: row.updatedAt,
-        action: "Action",
+  const getSearchSuggestion = useCallback(
+    async (searchParamas, collection) => {
+      const suggestionData = await searchSuggestion(searchParamas, collection);
+      if (!suggestionData) return;
+      setSuggestionData(suggestionData);
+    },
+    [setSuggestionData],
+  );
+  const getSearchData = useCallback(
+    async (searchParamas, collection) => {
+      const searchResult = await searchData(searchParamas, collection);
+      if (!searchResult) return;
+      const formattedSearchData = searchResult.map((row) => ({
+        ...row,
+        status: (row.isActive ? "Active" : "Inactive") || row.accepted,
+        lastActive: row.updatedAt || row.expireAt
       }));
       setTableSearchData(formattedSearchData);
     },
@@ -55,19 +53,19 @@ const SearchBox = ({ title, setTableSearchData }) => {
     const trimmed = searchInput.trim();
     const timerId = setTimeout(() => {
       if (trimmed) {
-        mutate(trimmed);
+        getSearchSuggestion(trimmed, collection);
       }
-      generateSearchDataForTable(trimmed);
+      getSearchData(trimmed, collection);
     }, 300);
     return () => {
       clearTimeout(timerId);
     };
-  }, [generateSearchDataForTable, mutate, searchInput]);
+  }, [getSearchData, getSearchSuggestion, searchInput, collection]);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const searchBoxValue = formData.get("search");
-    generateSearchDataForTable(searchBoxValue);
+    getSearchData(searchBoxValue, collection);
   };
   return (
     <>
@@ -99,17 +97,21 @@ const SearchBox = ({ title, setTableSearchData }) => {
             <ul className="max-h-72 overflow-y-auto" role="listbox">
               {suggestionData.map((user) => (
                 <li key={user._id}>
-                  <div className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-100">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-                      <Search className="size-3.5" />
-                    </span>
+                  <div className="transition-colors hover:bg-slate-50">
                     <button
                       type="button"
-                      className="min-w-0 flex-1 truncate font-medium"
+                      className="flex w-full min-w-0 flex-col items-start px-4 py-2.5 text-left"
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => handleSuggestionClick(user.email)}
                     >
-                      {user.email}
+                      <span className="w-full truncate text-sm font-medium text-slate-800">
+                        {user.email || user.role}
+                      </span>
+                      {user.email && user.role && (
+                        <span className="mt-0.5 w-full truncate text-xs capitalize text-slate-500">
+                          {user.role}
+                        </span>
+                      )}
                     </button>
                   </div>
                 </li>

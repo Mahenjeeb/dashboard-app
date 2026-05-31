@@ -1,9 +1,14 @@
 import USERS from "../../models/user_model.js";
 import userroles from "../../models/user_role_model.js";
+import dateFormatPipeline from "../../utils/format-date.js";
 const getUsers = async (req, resp) => {
   const { _id } = req.user;
   try {
-    const users = await USERS.find({ _id: { $ne: _id } });
+    // const users = await USERS.find({ _id: { $ne: _id } });
+    const users = await USERS.aggregate([
+      { $match: { _id: { $ne: _id } } },
+      ...dateFormatPipeline,
+    ]);
     return resp.status(200).send(users);
   } catch (error) {
     return resp.status(500).json(error.message);

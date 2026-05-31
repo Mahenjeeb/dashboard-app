@@ -7,7 +7,6 @@ import { interceptorAPI } from "@/api/interceptorAPI";
 import { useState } from "react";
 import { queryClient } from "@/util/queryClient";
 import { notifySuccess } from "@/util/notifications";
-
 const columns = [
   {
     key: "email",
@@ -24,11 +23,7 @@ const columns = [
   {
     key: "expireAt",
     label: "Valid Upto",
-  },
-  {
-    key: "action",
-    label: "Action"
-  },
+  }
 ];
 
 const Invitations = () => {
@@ -107,6 +102,7 @@ const Invitations = () => {
         emptyMessage="No invitations sent yet."
         rows={invitedUserData || []}
         title="Invitations"
+        collection = "invitations"
       />
     </section>
   );

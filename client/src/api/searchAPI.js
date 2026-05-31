@@ -1,16 +1,20 @@
 import { interceptorAPI } from "@/api/interceptorAPI";
 const api = interceptorAPI();
-export const getSearchSuggestionsForUser = async (query) => {
-  const { data } = await api.post("/app/users/get_search_suggestion", {
-    query,
+export const searchSuggestion = async (searchParams, collection) => {
+  const { data } = await api.get("/app/get_search_suggestion", {
+    params: {
+      collection,
+      searchParams,
+    },
   });
   return data;
 };
 
-export const searchUsers = async (query) => {
-  const { data } = await api.get(`/app/users/search`, {
+export const searchData = async (searchParams, collection) => {
+  const { data } = await api.get(`/app/search`, {
     params: {
-      query,
+      collection,
+      searchParams
     },
   });
   return data;

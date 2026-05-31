@@ -17,8 +17,8 @@ import {
 } from "../controllers/app/user-controller.js";
 import authenticate from "../middleware/auth-middleware.js";
 import {
-  getSearchSuggestionsForUser,
-  searchUsers,
+  getSearchSuggestions,
+  searchData,
 } from "../controllers/app/serach-controller.js";
 
 const app_private_router = express.Router();
@@ -33,10 +33,7 @@ app_private_router.get("/users", getUsers);
 app_private_router.get("/roles", getRoles);
 app_private_router.post("/update", editUser);
 app_private_router.post("/delete", deleteUser);
-app_private_router.post(
-  "/users/get_search_suggestion",
-  getSearchSuggestionsForUser,
-);
-app_private_router.get("/users/search", searchUsers);
+app_private_router.get("/get_search_suggestion", getSearchSuggestions);
+app_private_router.get("/search", searchData);
 app_public_router.post("/accept", checkInvitation);
 export { app_private_router, app_public_router };

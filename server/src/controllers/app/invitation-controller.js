@@ -3,6 +3,7 @@ import Invitation from "../../models/invitation-model.js";
 import userModel from "../../models/user_model.js";
 import { sendMail } from "./mail-controller.js";
 import bcrypt from "bcrypt";
+import dateFormatPipeline from "../../utils/format-date.js";
 
 const createInvitation = async (req, resp) => {
   try {
@@ -135,7 +136,7 @@ const checkInvitation = async (req, resp) => {
 };
 const getInvitedUsers = async (req, resp) => {
   try {
-    const invitations = await Invitation.find({});
+    const invitations = await Invitation.aggregate([{$match: {}}, ...dateFormatPipeline]);
     return resp.status(200).send(invitations);
   } catch (error) {
     return resp.status(500).json({ message: error.message });
