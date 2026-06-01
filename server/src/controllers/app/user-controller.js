@@ -4,7 +4,6 @@ import dateFormatPipeline from "../../utils/format-date.js";
 const getUsers = async (req, resp) => {
   const { _id } = req.user;
   try {
-    // const users = await USERS.find({ _id: { $ne: _id } });
     const users = await USERS.aggregate([
       { $match: { _id: { $ne: _id } } },
       ...dateFormatPipeline,

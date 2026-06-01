@@ -42,4 +42,4 @@ async function searchSingleData(searchParams, collection, _id) {
   );
 }
 
-export { searchInCollection, searchSingleData };
+export { searchInCollection, searchSingleData, getCollectionModel };
