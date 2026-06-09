@@ -29,7 +29,7 @@ const Users = () => {
     id: row._id,
     email: row.email,
     role: row.role,
-    status: row.isActive ? "Active" : "Inactive",
+    status: row.status,
     lastActive: row.updatedAt,
     action: "Action",
   }));

@@ -5,7 +5,7 @@ const userschema = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String },
-    isActive: { type: Boolean, default: true },
+    status: { type: String, default: "active" },
     workspace: { type: Schema.Types.ObjectId, ref: "workspaces" },
     refreshToken: [String],
   },

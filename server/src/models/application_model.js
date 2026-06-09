@@ -5,7 +5,7 @@ const applicationSchema = new Schema({
   appName: { type: String, default: "Test App", required: true, unique: true },
   appDesc: { type: String },
   appUrl: { type: String, required: true, unique: true },
-  isActive: { type: Boolean, default: true },
+  status: { type: String, default: 'active' },
   workspace: { type: Schema.Types.ObjectId, ref: "workspaces", required: true },
 });
 

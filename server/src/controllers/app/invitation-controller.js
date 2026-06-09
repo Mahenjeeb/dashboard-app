@@ -121,7 +121,7 @@ const checkInvitation = async (req, resp) => {
       email: invitation.email,
       password: hashedPassword,
       role: invitation.roleForUser,
-      isActive: true,
+      status: 'active',
       workspace: invitation.workspace,
     });
 
