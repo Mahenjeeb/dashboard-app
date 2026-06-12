@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { searchSuggestion, searchData } from "@/api/searchAPI";
 
-const SearchBox = ({ title, setTableSearchData, collection }) => {
+const SearchBox = ({ title, setTableData, collection }) => {
   const [suggestionData, setSuggestionData] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -38,9 +38,9 @@ const SearchBox = ({ title, setTableSearchData, collection }) => {
         ...row,
         lastActive: row.updatedAt || row.expireAt,
       }));
-      setTableSearchData(formattedSearchData);
+      setTableData(formattedSearchData);
     },
-    [setTableSearchData],
+    [setTableData],
   );
 
   useEffect(() => {

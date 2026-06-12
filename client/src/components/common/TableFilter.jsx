@@ -16,7 +16,7 @@ const checkboxBase =
 const actionBase =
   "rounded-md px-4 py-2 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-200";
 
-const TableFilter = ({ title, collection }) => {
+const TableFilter = ({ title, collection, setTableData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [resp, setResp] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState({});
@@ -59,6 +59,7 @@ const TableFilter = ({ title, collection }) => {
       values,
     })),
   });
+
   const applyFilter = async () => {
     const filterStructredCondition = {
       ...buildFilterCondition(selectedFilters),
@@ -72,8 +73,17 @@ const TableFilter = ({ title, collection }) => {
         },
       },
     );
-    // console.log(selectedFilters);
-    console.log(data);
+    setTableData(
+      data.map((row) => ({
+        ...row,
+        lastActive: row.updatedAt || row.expireAt,
+      })),
+    );
+    setIsOpen(false);
+  };
+
+  const clearSelection = () => {
+    setSelectedFilters({});
   };
 
   return (
@@ -137,7 +147,7 @@ const TableFilter = ({ title, collection }) => {
                               className={`${checkboxBase}`}
                             />
                             <label
-                              htmlFor={value}
+                              htmlFor={id}
                               key={value}
                               className="capitalize"
                             >
@@ -154,6 +164,7 @@ const TableFilter = ({ title, collection }) => {
                 <button
                   className={`${actionBase} border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-950`}
                   type="button"
+                  onClick={clearSelection}
                 >
                   Clear
                 </button>

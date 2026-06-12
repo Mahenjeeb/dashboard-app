@@ -1,4 +1,5 @@
 import { getCollectionModel } from "./search-helper.js";
+import dateFormatPipeline from "./format-date.js";
 const COLUMNS_TO_FILTER = {
   users: ["role", "status"],
   invitations: ["roleForUser", "accepted"],
@@ -43,7 +44,11 @@ const filterOnCollection = async (collection, filters = [], _id) => {
     query[filter.field] = { $in: filter.values };
     return query;
   }, {});
-  return await model.find({ _id: { $ne: _id }, ...condition });
+  // return await model.find({ _id: { $ne: _id }, ...condition }).select("__v -refreshTokens -password");
+  return await model.aggregate([
+    { $match: { _id: { $ne: _id }, ...condition } },
+    ...dateFormatPipeline,
+  ])
 };
 
 export { filterColumns, filterOnCollection };
