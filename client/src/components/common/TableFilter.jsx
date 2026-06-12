@@ -19,6 +19,7 @@ const actionBase =
 const TableFilter = ({ title, collection }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [resp, setResp] = useState(null);
+  const [selectedFilters, setSelectedFilters] = useState({});
 
   const api = interceptorAPI();
   const getFilters = async () => {
@@ -33,6 +34,48 @@ const TableFilter = ({ title, collection }) => {
       getFilters();
     }
   };
+  const handleSelection = (checked, value, category) => {
+    setSelectedFilters((current) => {
+      // null checking for selected filter. defalut value []
+      const currentValues = current[category] ?? [];
+      // check = true then nextValues will have data else []
+      const nextValues = checked
+        ? [...new Set([...currentValues, value])]
+        : currentValues.filter((item) => item !== value);
+      // removing empty category from selected filters. e.g {role : ['admin', 'super admin'], status : []}
+      if (nextValues.length === 0) {
+        const nextFilters = { ...current };
+        delete nextFilters[category];
+        return nextFilters;
+      }
+      // returing selected filter
+      return { ...current, [category]: nextValues };
+    });
+  };
+  const buildFilterCondition = (selectedFilters) => ({
+    filters: Object.entries(selectedFilters).map(([field, values]) => ({
+      field,
+      operator: "in",
+      values,
+    })),
+  });
+  const applyFilter = async () => {
+    const filterStructredCondition = {
+      ...buildFilterCondition(selectedFilters),
+    };
+    const { data } = await api.post(
+      `app/apply-filter`,
+      filterStructredCondition,
+      {
+        params: {
+          collection,
+        },
+      },
+    );
+    // console.log(selectedFilters);
+    console.log(data);
+  };
+
   return (
     <div className="relative">
       <button
@@ -65,28 +108,48 @@ const TableFilter = ({ title, collection }) => {
           <div className="max-h-64 overflow-y-auto px-3 pb-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300">
             <section className="border-t border-slate-100 pt-2">
               {resp &&
-                Object.keys(resp).map((category) => (
+                Object.entries(resp ?? {}).map(([category, values]) => (
                   <h3
                     className="mb-1.5 text-xs font-medium uppercase tracking-wide text-slate-500"
                     key={category}
                   >
                     {category.toUpperCase()}
-                    {/* <span className={`${checkboxBase}`}>{resp[category]}</span> */}
                     <ul>
-                      {resp[category].map((value) => (
-                        <li className="px-2 py-1 flex gap-3">
-                          <input
-                            id={value}
-                            type="checkbox"
-                            className={`${checkboxBase}`}
-                          />
-                          <label htmlFor={value} key={value} className="capitalize">{value}</label>
-                        </li>
-                      ))}
+                      {values.map((value) => {
+                        const id = `${category}-${String(value)}`;
+                        return (
+                          <li className="px-2 py-1 flex gap-3" key={value}>
+                            <input
+                              id={id}
+                              type="checkbox"
+                              value={value}
+                              checked={
+                                selectedFilters[category]?.includes(value) ??
+                                false
+                              }
+                              onChange={(event) =>
+                                handleSelection(
+                                  event.target.checked,
+                                  value,
+                                  category,
+                                )
+                              }
+                              className={`${checkboxBase}`}
+                            />
+                            <label
+                              htmlFor={value}
+                              key={value}
+                              className="capitalize"
+                            >
+                              {value}
+                            </label>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </h3>
                 ))}
-              <div className="space-y-1">{console.log(resp)}</div>
+              <div className="space-y-1">{}</div>
               <div className="mt-3 flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
                 <button
                   className={`${actionBase} border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-950`}
@@ -97,6 +160,7 @@ const TableFilter = ({ title, collection }) => {
                 <button
                   className={`${actionBase} bg-slate-900 text-white hover:bg-slate-800`}
                   type="button"
+                  onClick={() => applyFilter()}
                 >
                   Apply
                 </button>

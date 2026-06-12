@@ -1,8 +1,7 @@
 import USERS from "../../models/user_model.js";
 import userroles from "../../models/user_role_model.js";
-import filterColumns from "../../utils/filter-helper.js";
-// import filterPipeLine from "../../utils/filter-column.js";
 import dateFormatPipeline from "../../utils/format-date.js";
+
 const getUsers = async (req, resp) => {
   const { _id } = req.user;
   try {
@@ -10,21 +9,6 @@ const getUsers = async (req, resp) => {
       { $match: { _id: { $ne: _id } } },
       ...dateFormatPipeline,
     ]);
-    /*const testUsers = await USERS.find({
-      $and: [
-        {
-          $or: [
-            {
-              isActive: true,
-            },
-            {
-              isActive: false,
-            },
-          ],
-        },
-        { role: "user" },
-      ],
-    }); */
     return resp.status(200).send(users);
   } catch (error) {
     return resp.status(500).json(error.message);

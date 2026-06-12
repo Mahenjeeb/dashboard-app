@@ -21,7 +21,7 @@ import {
   searchData,
 } from "../controllers/app/serach-controller.js";
 import getPagination from "../controllers/app/pagination-controller.js";
-import { getFilters } from "../controllers/app/filter-controller.js";
+import { applyFilters, getFilters } from "../controllers/app/filter-controller.js";
 
 const app_private_router = express.Router();
 const app_public_router = express.Router();
@@ -38,6 +38,7 @@ app_private_router.post("/delete", deleteUser);
 app_private_router.get("/get_search_suggestion", getSearchSuggestions);
 app_private_router.get("/search", searchData);
 app_private_router.get("/filter", getFilters);
+app_private_router.post("/apply-filter", applyFilters);
 app_private_router.get("/pagination", getPagination);
 app_public_router.post("/accept", checkInvitation);
 export { app_private_router, app_public_router };
